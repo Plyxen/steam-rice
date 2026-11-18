@@ -1,0 +1,386 @@
+{
+    "name": "steam-rice",
+    "author": "Pota",
+    "description": "Linux-rice look for Steam: misty wallpaper behind the library, panes split by thin lines, Iosevka, greyscale with art left in colour, one-row top bar, window dots.",
+    "version": "1.0.0",
+    "tags": [
+        "Dark",
+        "Minimal",
+        "Greyscale",
+        "Rice",
+        "Background"
+    ],
+    "header_image": "https://raw.githubusercontent.com/Plyxen/steam-rice/main/assets/library.png",
+    "splash_image": "https://raw.githubusercontent.com/Plyxen/steam-rice/main/assets/library.png",
+    "github": {
+        "owner": "Plyxen",
+        "repo_name": "steam-rice"
+    },
+    "Steam-WebKit": "webkit.css",
+    "Patches": [
+        {
+            "MatchRegexString": ".*",
+            "TargetCss": "mono.css"
+        },
+        {
+            "MatchRegexString": ".*",
+            "TargetCss": "rice.css"
+        }
+    ],
+    "Conditions": {
+        "Font": {
+            "description": "Iosevka is the terminal font of the rice. Steam is Motiva Sans, the stock one.",
+            "default": "Iosevka",
+            "tab": "Look",
+            "values": {
+                "Iosevka": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/font-iosevka.css"
+                    }
+                },
+                "Steam": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/font-steam.css"
+                    }
+                }
+            }
+        },
+        "Corners": {
+            "description": "How round buttons, fields and menus are.",
+            "default": "Small",
+            "tab": "Look",
+            "values": {
+                "Sharp": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/corners-sharp.css"
+                    }
+                },
+                "Small": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/corners-small.css"
+                    }
+                },
+                "Round": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/corners-round.css"
+                    }
+                }
+            }
+        },
+        "Wallpaper dim": {
+            "description": "How dark the wallpaper is behind the library. Go heavier if text is hard to read.",
+            "default": "Medium",
+            "tab": "Look",
+            "values": {
+                "Light": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/wallpaper-dim-light.css"
+                    }
+                },
+                "Medium": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/wallpaper-dim-medium.css"
+                    }
+                },
+                "Heavy": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/wallpaper-dim-heavy.css"
+                    }
+                }
+            }
+        },
+        "Film grain": {
+            "description": "Fine grain over the wallpaper.",
+            "default": "yes",
+            "tab": "Look",
+            "values": {
+                "yes": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/grain-yes.css"
+                    }
+                },
+                "no": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/grain-no.css"
+                    }
+                }
+            }
+        },
+        "Black-and-white game art": {
+            "description": "Game pictures in the library. Hover shows a picture in colour while the mouse is on it.",
+            "default": "Off",
+            "tab": "Look",
+            "values": {
+                "Off": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/mono-art-off.css"
+                    }
+                },
+                "On": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/mono-art-on.css"
+                    }
+                },
+                "Hover": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/mono-art-hover.css"
+                    }
+                }
+            }
+        },
+        "Store and community pages": {
+            "description": "These are web pages, so they keep their own colours. Muted turns them down to sit next to the grey client, Greyscale removes colour, Steam leaves them alone.",
+            "default": "Muted",
+            "tab": "Look",
+            "values": {
+                "Muted": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/web-saturation-muted.css"
+                    }
+                },
+                "Greyscale": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/web-saturation-greyscale.css"
+                    }
+                },
+                "Steam": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/web-saturation-steam.css"
+                    }
+                }
+            }
+        },
+        "One-row top bar": {
+            "description": "Menus, tabs and window buttons share a single row.",
+            "default": "yes",
+            "tab": "Layout",
+            "values": {
+                "yes": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/one-row-bar-yes.css"
+                    }
+                },
+                "no": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/one-row-bar-no.css"
+                    }
+                }
+            }
+        },
+        "Small lowercase tabs": {
+            "description": "store library community, instead of STORE LIBRARY COMMUNITY.",
+            "default": "yes",
+            "tab": "Layout",
+            "values": {
+                "yes": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/lowercase-tabs-yes.css"
+                    }
+                },
+                "no": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/lowercase-tabs-no.css"
+                    }
+                }
+            }
+        },
+        "Window buttons as dots": {
+            "description": "Three small dots that light up under the mouse, instead of - [] x.",
+            "default": "yes",
+            "tab": "Layout",
+            "values": {
+                "yes": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/window-dots-yes.css"
+                    }
+                },
+                "no": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/window-dots-no.css"
+                    }
+                }
+            }
+        },
+        "Hide announcements button": {
+            "description": "The megaphone in the title bar.",
+            "default": "yes",
+            "tab": "Declutter",
+            "values": {
+                "yes": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/hide-announcements-yes.css"
+                    }
+                },
+                "no": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/hide-announcements-no.css"
+                    }
+                }
+            }
+        },
+        "Hide Big Picture button": {
+            "description": "View > Big Picture Mode still works.",
+            "default": "yes",
+            "tab": "Declutter",
+            "values": {
+                "yes": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/hide-big-picture-yes.css"
+                    }
+                },
+                "no": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/hide-big-picture-no.css"
+                    }
+                }
+            }
+        },
+        "Hide What's New": {
+            "description": "The news strip at the top of the library home.",
+            "default": "no",
+            "tab": "Declutter",
+            "values": {
+                "yes": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/hide-whats-new-yes.css"
+                    }
+                },
+                "no": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/hide-whats-new-no.css"
+                    }
+                }
+            }
+        },
+        "Hide Add shelf": {
+            "description": "The \"Add shelf\" row on the library home.",
+            "default": "yes",
+            "tab": "Declutter",
+            "values": {
+                "yes": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/hide-add-shelf-yes.css"
+                    }
+                },
+                "no": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/hide-add-shelf-no.css"
+                    }
+                }
+            }
+        },
+        "Hide Add a Game": {
+            "description": "Games > Add a Non-Steam Game still works.",
+            "default": "no",
+            "tab": "Declutter",
+            "values": {
+                "yes": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/hide-add-game-yes.css"
+                    }
+                },
+                "no": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/hide-add-game-no.css"
+                    }
+                }
+            }
+        }
+    }
+}

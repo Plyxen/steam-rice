@@ -1,0 +1,4 @@
+/* steam-rice option "Hide Add shelf": no */
+:root {
+    --hide-add-shelf: off !important;
+}

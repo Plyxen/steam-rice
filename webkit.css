@@ -1,0 +1,54 @@
+/* steam-rice: the pages Steam shows in its built-in browser (store, community, profiles).
+   They are ordinary web pages with their own style sheets, which change whenever Valve likes,
+   so this file does little on purpose: the font, a neutral page background, and turning the colour down.
+   https://github.com/Plyxen/steam-rice   GPL-3.0-or-later */
+
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/iosevka@5.3.0/400.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/iosevka@5.3.0/600.css');
+
+:root {
+    --font: 'Iosevka';
+    /* 1 = Steam's colours, 0 = black and white. In between the blue chrome and the artwork both calm down */
+    --web-saturation: 0.35;
+}
+
+/* on the page's root a filter covers the whole page and leaves fixed headers where they are */
+html {
+    filter: saturate(var(--web-saturation));
+}
+
+body,
+body * {
+    font-family: var(--font), 'Motiva Sans', Arial, Helvetica, sans-serif !important;
+}
+
+/* the page background: Steam's navy with a blue glow at the top becomes plain dark grey */
+html,
+body,
+body.v6,
+body.flat_page,
+body.migrated_profile_page {
+    background-color: hsl(0, 0%, 8%) !important;
+}
+body.v6,
+body.v6.responsive_page {
+    background-image: none !important;
+}
+
+/* thin grey scrollbars, as in the client */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: hsla(0, 0%, 100%, 0.14);
+    border: 2px solid transparent;
+    background-clip: content-box;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: hsla(0, 0%, 100%, 0.3);
+}

@@ -1,0 +1,4 @@
+/* steam-rice option "Wallpaper dim": Heavy */
+:root {
+    --wallpaper-dim: 0.7 !important;
+}

@@ -1,0 +1,4 @@
+/* steam-rice option "Hide Big Picture button": no */
+:root {
+    --hide-big-picture: off !important;
+}

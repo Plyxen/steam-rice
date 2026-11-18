@@ -1,0 +1,4 @@
+/* steam-rice option "Film grain": no */
+:root {
+    --grain: off !important;
+}

@@ -1,0 +1,4 @@
+/* steam-rice option "Hide Add a Game": yes */
+:root {
+    --hide-add-game: on !important;
+}

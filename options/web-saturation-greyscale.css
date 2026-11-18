@@ -1,0 +1,4 @@
+/* steam-rice option "Store and community pages": Greyscale */
+:root {
+    --web-saturation: 0 !important;
+}

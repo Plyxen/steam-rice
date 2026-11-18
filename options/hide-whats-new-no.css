@@ -1,0 +1,4 @@
+/* steam-rice option "Hide What's New": no */
+:root {
+    --hide-whats-new: off !important;
+}

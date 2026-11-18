@@ -1,0 +1,4 @@
+/* steam-rice option "Corners": Small */
+:root {
+    --corners: 3px !important;
+}

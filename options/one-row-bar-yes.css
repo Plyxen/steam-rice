@@ -1,0 +1,4 @@
+/* steam-rice option "One-row top bar": yes */
+:root {
+    --one-row-bar: on !important;
+}
