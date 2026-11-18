@@ -441,7 +441,8 @@ body .DialogButton.Primary:hover:not(:disabled) {
    instead of a banner. With quiet, a picture shows its colours while the mouse is on it */
 @container style(--pictures: quiet) or style(--pictures: grey) {
     .DesktopUI .MainPanel img,
-    .DesktopUI .LeftListSizableContainer img {
+    .DesktopUI .LeftListSizableContainer img,
+    .friendsui-container .avatar {
         /* !important: Steam sets filters of its own on a few pictures, such as trading cards */
         filter: grayscale(1) brightness(0.7) !important;
         transition: filter 0.15s;
@@ -460,7 +461,9 @@ body .DialogButton.Primary:hover:not(:disabled) {
 @container style(--pictures: quiet) {
     .DesktopUI .MainPanel img:hover,
     .DesktopUI .MainPanel :is(a, .LibraryItemBox):hover img,
-    .DesktopUI .LeftListSizableContainer :is(.Installed, .Uninstalled):hover img {
+    .DesktopUI .LeftListSizableContainer :is(.Installed, .Uninstalled):hover img,
+    .friendsui-container .friend:hover .avatar,
+    .friendsui-container .currentUserContainer .avatar {
         filter: none !important;
     }
 }
@@ -501,6 +504,116 @@ body .DialogButton.Primary:hover:not(:disabled) {
 .DesktopUI .BottomBarContainer .Alert {
     background: var(--popup) !important;
     border-top: 1px solid var(--line);
+}
+
+/* ================================================================
+   friends list and chat: the same wallpaper as the main window, the parts see-through, lines between them
+   ================================================================ */
+html.friendsui-container body:not(.ContextMenuPopupBody) {
+    background-color: black !important;
+    background-image: var(--grain-layer), var(--wallpaper-shade), var(--wallpaper) !important;
+    background-size: auto, auto, auto, auto, auto, cover !important;
+    background-position: center !important;
+}
+
+/* the friends list: your own header, the tab row, the list, the group chats title, the footer */
+.friendsui-container .friendListHeaderContainer,
+.friendsui-container .friendlistListContainer,
+.friendsui-container .friendGroup,
+.friendsui-container .friendListFooter,
+.friendsui-container .singleWindowFocusBar {
+    background: none !important;
+    box-shadow: none !important;
+}
+.friendsui-container .friendTab.activeTab,
+.friendsui-container .friendsListSectionTitle {
+    background: none !important;
+    box-shadow: inset 0 1px 0 var(--line), inset 0 -1px 0 var(--line) !important;
+}
+.friendsui-container .friendListFooter {
+    box-shadow: inset 0 1px 0 var(--line) !important;
+}
+.friendsui-container .currentUserContainer,
+.friendsui-container .friendGroup {
+    border-color: var(--line) !important;
+}
+/* the row of links under your name */
+.friendsui-container .friendListHeaderContainer .LinkRow {
+    background: var(--glass) !important;
+}
+/* the soft shadows Steam lays over the top and bottom of the list */
+.friendsui-container .FriendListInsetShadowTop,
+.friendsui-container .FriendListInsetShadowBottom {
+    display: none;
+}
+.friendsui-container .friend,
+.friendsui-container .ChatRoomListGroupItem {
+    box-shadow: none !important;
+}
+.friendsui-container .friendlistListContainer .friend:hover,
+.friendsui-container .ChatRoomListGroupItem:hover {
+    background: var(--hover) !important;
+}
+
+/* a chat: tabs, header and the box you type in are see-through, split by lines */
+.friendsui-container .chatWindow,
+.friendsui-container .chatDialogs,
+.friendsui-container .chatRoomGroupNavFooter {
+    background: none !important;
+}
+.friendsui-container .titleBarContainer.ChatTabs {
+    background: none !important;
+    box-shadow: inset 0 -1px 0 var(--line) !important;
+}
+.friendsui-container .chatTabList .chatTab {
+    background: none !important;
+    box-shadow: none !important;
+}
+.friendsui-container .chatTabList .chatTab.active {
+    background: var(--active) !important;
+}
+.friendsui-container .chatWindow .chatHeader {
+    background: none !important;
+    box-shadow: inset 0 -1px 0 var(--line) !important;
+}
+.friendsui-container .chatWindow .chatEntry {
+    background: none !important;
+    box-shadow: inset 0 1px 0 var(--line) !important;
+}
+
+/* ================================================================
+   Big Picture mode. mono.js already makes it grey and sets the font. This adds the wallpaper in place of
+   the black behind everything, and the quiet pictures
+   ================================================================ */
+.GamepadMode.BasicUiRoot {
+    background-color: black !important;
+    background-image: var(--grain-layer), var(--wallpaper-shade), var(--wallpaper) !important;
+    background-size: auto, auto, auto, auto, auto, cover !important;
+    background-position: center !important;
+}
+.GamepadMode .BasicHome.OpaqueBackground {
+    background: none !important;
+}
+.GamepadMode .BasicFooter {
+    background: none !important;
+    border-top-color: var(--line) !important;
+}
+@container style(--pictures: quiet) or style(--pictures: grey) {
+    .GamepadMode img {
+        filter: grayscale(1) brightness(0.7) !important;
+        transition: filter 0.15s;
+    }
+    /* the home screen's backdrop: a large, darkened copy of the selected game's art */
+    .GamepadMode .RecentSection > .Panel > div > div > .Container > img {
+        visibility: hidden;
+    }
+}
+@container style(--pictures: quiet) {
+    /* gpfocus is the item the controller is on */
+    .GamepadMode .gpfocus img,
+    .GamepadMode .LibraryItemBox:hover img {
+        filter: none !important;
+    }
 }
 
 /* ================================================================
