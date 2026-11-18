@@ -420,6 +420,15 @@ body .DialogButton.Primary:hover:not(:disabled) {
     fill: var(--ink) !important;
 }
 
+/* the play square on the newest game's tile on the library home: the same light button */
+.DesktopUI .MainPanel .LibraryItemBox .Play {
+    background: var(--button) !important;
+}
+.DesktopUI .MainPanel .LibraryItemBox .Play svg,
+.DesktopUI .MainPanel .LibraryItemBox .Play svg * {
+    fill: var(--ink) !important;
+}
+
 /* Remote Play Together gives each player a colour, set on the element itself. It tells players apart,
    so it stays, turned down like the other colours that mean something */
 .DesktopUI .OverlayPopup :is(.DropSlotNumber, .PlayerController > div) {

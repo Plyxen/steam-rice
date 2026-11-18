@@ -2,7 +2,7 @@
 
 Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https://steambrew.app). The sibling of [discord-rice](https://github.com/Plyxen/discord-rice), with the same wallpaper, font and greys.
 
-![steam-rice: the library on a misty wallpaper, black-and-white covers, Iosevka, lowercase tabs](assets/library.png)
+![steam-rice: the library on a misty wallpaper, with black-and-white covers and the one under the mouse in colour](assets/library.png)
 
 ![a game's page: its logo on the wallpaper instead of a banner](assets/game.png)
 
@@ -22,7 +22,7 @@ Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https:/
 
 ## Light
 
-About 60 KB in five files, and it adds 121 style rules to Steam's twenty thousand.
+About 60 KB in five files, and it adds 123 style rules to Steam's twenty thousand.
 
 Steam has almost no colour variables. Its look is some eleven thousand literal colours in its own style sheets, so themes usually override them rule by rule, which gets large and breaks when Valve renames things. This theme doesn't add colour rules at all. `mono.js` reads Steam's style sheets once at start (about 40 ms), rewrites the colours in the text, and gives every window the rewritten sheet in place of the original. Steam runs with the same number of rules as with no theme, and a Steam update needs nothing from you.
 
