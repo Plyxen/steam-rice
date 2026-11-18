@@ -6,6 +6,8 @@ Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https:/
 
 ![a game's page: its logo on the wallpaper instead of a banner](assets/game.png)
 
+![Big Picture mode: the same greys, font and quiet pictures](assets/bigpicture.png)
+
 ## What it does
 
 - **Tiled, no boxes.** One misty wallpaper behind the library, with the game list, the page and the bars split by 1px lines. No gradients or shadows.
