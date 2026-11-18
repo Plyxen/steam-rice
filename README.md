@@ -75,13 +75,6 @@ A few more are at the top of `rice.css`, each with a comment: your own wallpaper
 
 Smaller covers are Steam's own setting: **Settings → Library → Library user interface display size → Small**.
 
-## Not checked yet
-
-- Chat was checked on an empty conversation, so not with messages, pictures or a group chat in it.
-- The in-game overlay was checked on its main screen and four panels (game overview, settings, friends, Remote Play Together), in two games.
-- `install.sh` has only been run against stand-in folders on Windows, not on a real Linux or macOS Steam.
-- Big Picture was checked on its home screen only.
-
 ## Licence
 
 GPL-3.0-or-later, see `LICENSE`. Iosevka by Belleve Invis (SIL Open Font License 1.1) is loaded from jsDelivr, not included.
