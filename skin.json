@@ -2,7 +2,7 @@
     "name": "steam-rice",
     "author": "Pota",
     "description": "Linux-rice look for Steam: misty wallpaper behind the library, panes split by thin lines, Iosevka, quiet black-and-white pictures. Nothing in the top bar is moved. Greyscale without extra rules: a small script recolours Steam's own style sheets.",
-    "version": "1.3.1",
+    "version": "1.3.2",
     "tags": [
         "Dark",
         "Minimal",

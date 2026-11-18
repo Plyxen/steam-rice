@@ -420,6 +420,12 @@ body .DialogButton.Primary:hover:not(:disabled) {
     fill: var(--ink) !important;
 }
 
+/* Remote Play Together gives each player a colour, set on the element itself. It tells players apart,
+   so it stays, turned down like the other colours that mean something */
+.DesktopUI .OverlayPopup :is(.DropSlotNumber, .PlayerController > div) {
+    filter: saturate(0.4);
+}
+
 /* Icons that carry their colours inside the drawing itself (the achievements ribbon, the completion
    medal), where no style sheet reaches: greyed as a whole */
 .DesktopUI .AchievementSVG,
@@ -442,7 +448,8 @@ body .DialogButton.Primary:hover:not(:disabled) {
 @container style(--pictures: quiet) or style(--pictures: grey) {
     .DesktopUI .MainPanel img,
     .DesktopUI .LeftListSizableContainer img,
-    .friendsui-container .avatar {
+    .DesktopUI .OverlayPopup img,
+    .friendsui-container :is(.friend, .currentUserContainer) img {
         /* !important: Steam sets filters of its own on a few pictures, such as trading cards */
         filter: grayscale(1) brightness(0.7) !important;
         transition: filter 0.15s;
@@ -463,8 +470,8 @@ body .DialogButton.Primary:hover:not(:disabled) {
     .DesktopUI .MainPanel img:hover,
     .DesktopUI .MainPanel :is(a, .LibraryItemBox):hover img,
     .DesktopUI .LeftListSizableContainer :is(.Installed, .Uninstalled):hover img,
-    .friendsui-container .friend:hover .avatar,
-    .friendsui-container .currentUserContainer .avatar {
+    .DesktopUI .OverlayPopup img:hover,
+    .friendsui-container :is(.friend, .currentUserContainer):hover img {
         filter: none !important;
     }
 }

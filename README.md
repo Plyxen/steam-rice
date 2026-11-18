@@ -20,7 +20,7 @@ Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https:/
 
 ## Light
 
-About 60 KB in five files, and it adds 120 style rules to Steam's twenty thousand.
+About 60 KB in five files, and it adds 121 style rules to Steam's twenty thousand.
 
 Steam has almost no colour variables. Its look is some eleven thousand literal colours in its own style sheets, so themes usually override them rule by rule, which gets large and breaks when Valve renames things. This theme doesn't add colour rules at all. `mono.js` reads Steam's style sheets once at start (about 40 ms), rewrites the colours in the text, and gives every window the rewritten sheet in place of the original. Steam runs with the same number of rules as with no theme, and a Steam update needs nothing from you.
 
@@ -76,7 +76,7 @@ Smaller covers are Steam's own setting: **Settings → Library → Library user 
 ## Not checked yet
 
 - Chat was checked on an empty conversation, so not with messages, pictures or a group chat in it.
-- The in-game overlay was checked on its main screen and the game overview panel, in one game.
+- The in-game overlay was checked on its main screen and four panels (game overview, settings, friends, Remote Play Together), in two games.
 - `install.sh` has only been run against stand-in folders on Windows, not on a real Linux or macOS Steam.
 - Big Picture was checked on its home screen only.
 
