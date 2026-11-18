@@ -14,12 +14,13 @@ Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https:/
 - **Nothing moves.** Menus, tabs, the bell, your name, the window buttons and Play are where Steam has them, so your hand still finds them. The tabs are lowercase and spaced out to the width of Steam's own. The window buttons are full size with a dot drawn in them, so the corner still closes the window.
 - **Friends list and chat** have the same wallpaper, with their parts see-through and split by lines. Avatars follow the quiet pictures.
 - **Big Picture mode** gets the wallpaper, the greys, the font and the quiet pictures. The game the controller is on shows its colours.
+- **The in-game overlay** (Shift+Tab) is grey and in Iosevka like the rest, with flat buttons.
 - **Iosevka everywhere,** small corners, thin scrollbars.
 - **Store and community pages** are web pages with their own styles, so they only get the font, a neutral background and their colour turned down to sit next to the grey client.
 
 ## Light
 
-About 60 KB in five files, and it adds 116 style rules to Steam's twenty thousand.
+About 60 KB in five files, and it adds 120 style rules to Steam's twenty thousand.
 
 Steam has almost no colour variables. Its look is some eleven thousand literal colours in its own style sheets, so themes usually override them rule by rule, which gets large and breaks when Valve renames things. This theme doesn't add colour rules at all. `mono.js` reads Steam's style sheets once at start (about 40 ms), rewrites the colours in the text, and gives every window the rewritten sheet in place of the original. Steam runs with the same number of rules as with no theme, and a Steam update needs nothing from you.
 
@@ -74,8 +75,8 @@ Smaller covers are Steam's own setting: **Settings → Library → Library user 
 
 ## Not checked yet
 
-- The in-game overlay. It is built from the same parts, so it should come out grey and in Iosevka, but it has not been looked at with a game running.
-- Chat windows. Their rules were written from Steam's style sheet, not checked in an open chat.
+- Chat was checked on an empty conversation, so not with messages, pictures or a group chat in it.
+- The in-game overlay was checked on its main screen and the game overview panel, in one game.
 - `install.sh` has only been run against stand-in folders on Windows, not on a real Linux or macOS Steam.
 - Big Picture was checked on its home screen only.
 

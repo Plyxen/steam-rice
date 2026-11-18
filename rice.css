@@ -447,8 +447,9 @@ body .DialogButton.Primary:hover:not(:disabled) {
         filter: grayscale(1) brightness(0.7) !important;
         transition: filter 0.15s;
     }
-    /* a game's logo is its title here, so it stays at full brightness */
-    .DesktopUI .MainPanel img.TitleLogo {
+    /* a game's logo is its title, on its page and at the top of the in-game overlay: full brightness */
+    .DesktopUI .MainPanel img.TitleLogo,
+    .DesktopUI .ShowGameLogo img {
         filter: grayscale(1) !important;
     }
 
@@ -555,30 +556,49 @@ html.friendsui-container body:not(.ContextMenuPopupBody) {
     background: var(--hover) !important;
 }
 
-/* a chat: tabs, header and the box you type in are see-through, split by lines */
+/* a chat: the tab row, the conversation and the box you type in are see-through, split by lines */
 .friendsui-container .chatWindow,
 .friendsui-container .chatDialogs,
 .friendsui-container .chatRoomGroupNavFooter {
     background: none !important;
 }
-.friendsui-container .titleBarContainer.ChatTabs {
+.friendsui-container .ChatTabs.titleBarContainer {
     background: none !important;
+    border-color: transparent !important;
     box-shadow: inset 0 -1px 0 var(--line) !important;
 }
-.friendsui-container .chatTabList .chatTab {
+.friendsui-container .ChatTab {
     background: none !important;
-    box-shadow: none !important;
+    border-radius: var(--corners) var(--corners) 0 0;
 }
-.friendsui-container .chatTabList .chatTab.active {
+.friendsui-container .ChatTab.Active {
     background: var(--active) !important;
 }
 .friendsui-container .chatWindow .chatHeader {
     background: none !important;
     box-shadow: inset 0 -1px 0 var(--line) !important;
 }
-.friendsui-container .chatWindow .chatEntry {
+.friendsui-container .chatEntry {
     background: none !important;
     box-shadow: inset 0 1px 0 var(--line) !important;
+}
+/* the typing box and the groups of buttons beside it: glass instead of solid blocks */
+.friendsui-container .chatEntryControls,
+.friendsui-container .chatEntryActionsGroup,
+.friendsui-container .ChatMessageEntryVoice {
+    background: var(--glass) !important;
+    box-shadow: none !important;
+    border-radius: var(--corners);
+}
+.friendsui-container .chatEntry .chatTextarea {
+    box-shadow: none !important;
+}
+.friendsui-container .chatEntry :is(.chatSubmitButton, .VoiceToggle) {
+    background: none !important;
+    border-color: transparent !important;
+}
+.friendsui-container .chatEntry :is(.chatSubmitButton, .VoiceToggle):hover:not(.disabled) {
+    background: var(--active) !important;
 }
 
 /* ================================================================
