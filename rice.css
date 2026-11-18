@@ -443,13 +443,14 @@ body .DialogButton.Primary:hover:not(:disabled) {
 
 /* ---------------------------------------------------------------- pictures
    Steam's library is a wall of cover art. quiet and grey turn it down so the wallpaper and the text carry
-   the look: pictures go black-and-white and a little darker, and a game's page shows its logo on the wallpaper
+   the look: game pictures go black-and-white and a little darker, and a game's page shows its logo on the wallpaper
    instead of a banner. With quiet, a picture shows its colours while the mouse is on it */
 @container style(--pictures: quiet) or style(--pictures: grey) {
-    .DesktopUI .MainPanel img,
+    /* People's own pictures are left alone everywhere: avatars and the frames around them */
+    .DesktopUI .MainPanel img:not(.avatar, .avatarFrameImg, .PersonaAvatar),
     .DesktopUI .LeftListSizableContainer img,
-    .DesktopUI .OverlayPopup img,
-    .friendsui-container :is(.friend, .currentUserContainer) img {
+    .DesktopUI .OverlayPopup img:not(.avatar, .avatarFrameImg, .PersonaAvatar),
+    .friendsui-container .FriendInGameIcon img {
         /* !important: Steam sets filters of its own on a few pictures, such as trading cards */
         filter: grayscale(1) brightness(0.7) !important;
         transition: filter 0.15s;
@@ -471,7 +472,7 @@ body .DialogButton.Primary:hover:not(:disabled) {
     .DesktopUI .MainPanel :is(a, .LibraryItemBox):hover img,
     .DesktopUI .LeftListSizableContainer :is(.Installed, .Uninstalled):hover img,
     .DesktopUI .OverlayPopup img:hover,
-    .friendsui-container :is(.friend, .currentUserContainer):hover img {
+    .friendsui-container .friend:hover .FriendInGameIcon img {
         filter: none !important;
     }
 }
@@ -626,7 +627,7 @@ html.friendsui-container body:not(.ContextMenuPopupBody) {
     border-top-color: var(--line) !important;
 }
 @container style(--pictures: quiet) or style(--pictures: grey) {
-    .GamepadMode img {
+    .GamepadMode img:not(.avatar, .avatarFrameImg, .PersonaAvatar) {
         filter: grayscale(1) brightness(0.7) !important;
         transition: filter 0.15s;
     }

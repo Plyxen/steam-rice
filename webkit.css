@@ -16,6 +16,10 @@
 html {
     filter: saturate(var(--web-saturation));
 }
+/* Profile pages are left in their own colours: the artwork, backgrounds and avatars on them are the point */
+html:has(> body.profile_page) {
+    filter: none;
+}
 
 body,
 body * {

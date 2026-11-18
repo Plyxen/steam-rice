@@ -10,13 +10,13 @@ Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https:/
 
 - **Tiled, no boxes.** One misty wallpaper behind the library, with the game list, the page and the bars split by 1px lines. No gradients or shadows.
 - **Greyscale.** Steam's blue-grey is gone everywhere: library, settings, menus, downloads, friends. Only things that mean something (playing, online, danger) keep a colour, muted.
-- **Quiet pictures.** Steam's library is a wall of cover art. Here covers are black-and-white and a little darker, and show their colours while the mouse is on them. A game's page shows its logo on the wallpaper instead of a banner. The "What's New" strip is hidden.
+- **Quiet pictures.** Steam's library is a wall of cover art. Here covers are black-and-white and a little darker, and show their colours while the mouse is on them. People's avatars and their frames are left in colour. A game's page shows its logo on the wallpaper instead of a banner. The "What's New" strip is hidden.
 - **Nothing moves.** Menus, tabs, the bell, your name, the window buttons and Play are where Steam has them, so your hand still finds them. The tabs are lowercase and spaced out to the width of Steam's own. The window buttons are full size with a dot drawn in them, so the corner still closes the window.
-- **Friends list and chat** have the same wallpaper, with their parts see-through and split by lines. Avatars follow the quiet pictures.
+- **Friends list and chat** have the same wallpaper, with their parts see-through and split by lines.
 - **Big Picture mode** gets the wallpaper, the greys, the font and the quiet pictures. The game the controller is on shows its colours.
 - **The in-game overlay** (Shift+Tab) is grey and in Iosevka like the rest, with flat buttons.
 - **Iosevka everywhere,** small corners, thin scrollbars.
-- **Store and community pages** are web pages with their own styles, so they only get the font, a neutral background and their colour turned down to sit next to the grey client.
+- **Store and community pages** are web pages with their own styles, so they only get the font, a neutral background and their colour turned down to sit next to the grey client. Profile pages keep their full colours, for the artwork on them.
 
 ## Light
 
