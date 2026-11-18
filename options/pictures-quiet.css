@@ -1,0 +1,4 @@
+/* steam-rice option "Pictures": Quiet */
+:root {
+    --pictures: quiet !important;
+}

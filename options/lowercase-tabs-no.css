@@ -1,0 +1,4 @@
+/* steam-rice option "Lowercase tabs": no */
+:root {
+    --lowercase-tabs: off !important;
+}

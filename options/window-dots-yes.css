@@ -1,4 +1,4 @@
-/* steam-rice option "Window buttons as dots": yes */
+/* steam-rice option "Dots in the window buttons": yes */
 :root {
     --window-dots: on !important;
 }

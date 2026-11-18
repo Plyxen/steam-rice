@@ -24,24 +24,23 @@
     --wallpaper-dim: 0.5; /* 0 = raw wallpaper, 1 = black. Raise it if text is hard to read */
     --grain: on; /* off | on: film grain over the wallpaper */
 
-    --one-row-bar: on; /* off | on: menus, tabs and window buttons share one row */
-    --lowercase-tabs: on; /* off | on: store library community, small and lowercase */
-    --window-dots: on; /* off | on: small dots instead of - [] x. They light up under the mouse */
+    --lowercase-tabs: on; /* off | on: store library community instead of STORE LIBRARY COMMUNITY */
+    --tab-spacing: 0.144em; /* widens the tabs' letters. Tuned so each tab starts where Steam's own does */
+    --window-dots: on; /* off | on: a dot in each window button instead of - [] x. It lights up under the mouse */
     --dot-size: 13px;
 
-    /* everything keeps the same distance from the window's edge: the first menu, the game list's boxes,
-       the bottom bar's icons, the window dots */
-    --inset: 8px;
-    --gap: 6px; /* between the boxes at the top of the game list */
+    /* the game list's boxes and the bottom bar's icons keep the same distance from the window's edge */
+    --inset: 12px;
+    --gap: 10px; /* between the boxes at the top of the game list. 10px puts the first game on the row Steam has it on */
 
     /* ---- declutter (on = hidden) ---- */
     --hide-title-buttons: on; /* the megaphone and Big Picture buttons in the top bar (View > Big Picture Mode still works) */
-    --hide-whats-new: off; /* the news strip at the top of the library home */
+    --hide-whats-new: on; /* the news strip at the top of the library home */
     --hide-add-shelf: on; /* the "Add shelf" row on the library home */
     --hide-add-game: off; /* "Add a Game" in the bottom bar (Games > Add a Non-Steam Game still works) */
 
     /* ---- look ---- */
-    --mono-art: off; /* off | on | hover: black-and-white game pictures in the library. hover = colour under the mouse */
+    --pictures: quiet; /* quiet | grey | steam: quiet = black-and-white until the mouse is on them, grey = always, steam = as Steam has them */
 }
 
 /* colours. mono.js has already turned Steam grey, these are for what this file draws itself */
@@ -151,39 +150,28 @@ body .DialogButton.Primary:hover:not(:disabled) {
     color: var(--ink) !important;
 }
 
-/* window buttons, on every window that has them */
+/* window buttons, on every window that has them. They keep Steam's size and place, so the corner still
+   closes the window. Only what is drawn in them changes: a dot instead of the symbol */
 .title-area .title-area-highlight {
     display: none !important;
 }
 @container style(--window-dots: on) {
-    .title-area .window-controls {
-        gap: 8px;
-        padding: 0 var(--inset);
-        /* Steam caps this row at 32px, which leaves the dots above the bar's centre line */
-        height: 100% !important;
-        max-height: none !important;
-        align-items: center;
-    }
     .title-area .windowControlButton {
-        width: var(--dot-size) !important;
-        height: var(--dot-size) !important;
-        min-width: 0 !important;
-        border-radius: 50% !important;
-        background: hsla(0, 0%, 100%, 0.2) !important;
-        transition: background-color 0.12s;
+        --dot: hsla(0, 0%, 100%, 0.2);
+        background: radial-gradient(circle at center, var(--dot) calc(var(--dot-size) / 2 - 0.5px), transparent calc(var(--dot-size) / 2)) !important;
     }
     .title-area .windowControlButton > .title-area-icon-inner {
-        display: none !important;
+        visibility: hidden;
     }
     .title-area .closeButton:hover {
-        background: var(--red) !important;
+        --dot: var(--red);
     }
     .title-area .maximizeButton:hover,
     .title-area .restoreButton:hover {
-        background: var(--green) !important;
+        --dot: var(--green);
     }
     .title-area .minimizeButton:hover {
-        background: var(--yellow) !important;
+        --dot: var(--yellow);
     }
 }
 
@@ -205,104 +193,38 @@ body .DialogButton.Primary:hover:not(:disabled) {
     background: none !important;
 }
 
-/* ---------------------------------------------------------------- top bar */
+/* ---------------------------------------------------------------- top bar
+   Two rows, as Steam has them, and nothing is moved or resized: the menus, the tabs, the bell, your name
+   and the window buttons are where your hand expects them. Only the paint changes */
 .DesktopUI .TopBar {
     background: none !important;
     box-shadow: none !important;
-    border-bottom: 1px solid var(--line);
 }
 .DesktopUI .SuperNavBar {
     background: none !important;
 }
-/* the 12px strip Steam keeps where the address bar would be */
-.DesktopUI .URLBarReplacement {
-    display: none !important;
-}
-/* the address bar on store and community pages: see-through like the bar above it, its first icon on --inset */
+/* The line under the bar. Below the tabs Steam keeps a 12px strip in the library and puts the address bar
+   there on web pages. The line runs along the bottom of whichever one is there, drawn inside it */
+.DesktopUI .URLBarReplacement,
 .DesktopUI .URLBar {
     background: none !important;
-    box-shadow: none !important;
-    border-bottom: 1px solid var(--line);
-    padding-left: calc(var(--inset) - 8px);
-}
-
-/* One row:  menus  tabs  ....drag space....  buttons  window dots
-   Steam has the menus and the tabs in two rows. Its first row is dissolved (display: contents) so its parts
-   and the tabs become one flex row, all centred on the same line */
-@container style(--one-row-bar: on) {
-    .DesktopUI .TopBar {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        height: 36px;
-    }
-    .DesktopUI .TopBar > .TitleBar {
-        display: contents;
-    }
-    .DesktopUI .TopBar .RootMenuBar {
-        order: 1;
-        flex: none;
-        height: 100%;
-        margin: 0;
-        /* a menu has 4px of its own padding, so its first letter lands on --inset */
-        padding: 0 0 0 calc(var(--inset) - 4px);
-        align-items: center;
-    }
-    .DesktopUI .TopBar > .SuperNavBar {
-        order: 2;
-        flex: none;
-        height: 100%;
-        margin: 0 0 0 10px;
-        padding: 0;
-    }
-    .DesktopUI .TopBar .SuperNav {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        align-items: center;
-    }
-    /* back and forward: Steam pads them unevenly, which pushes them off the line */
-    .DesktopUI .TopBar .SuperNav .Arrow {
-        padding: 0 4px;
-        margin: 0;
-    }
-    .DesktopUI .TopBar .DragArea {
-        order: 3;
-        flex: 1;
-        align-self: stretch;
-        height: auto;
-        min-width: 20px;
-    }
-    .DesktopUI .TopBar .TitleBarControls {
-        order: 4;
-        flex: none;
-        height: 100%;
-        margin: 0 4px 0 0;
-        align-items: center;
-    }
-    .DesktopUI .TopBar .WindowControls {
-        order: 5;
-        flex: none;
-        height: 100%;
-    }
-    /* Steam pins the window buttons to the corner. In the row they take their own place at the end */
-    .DesktopUI .TopBar .WindowControls .title-area {
-        position: static;
-        height: 100%;
-    }
+    box-shadow: inset 0 -1px 0 var(--line) !important;
 }
 
 .DesktopUI .RootMenuBar .RootMenuButton {
     color: var(--fg-dim);
+    letter-spacing: 0.05em; /* same idea as the tabs below: keeps Help where Steam has it */
 }
 .DesktopUI .RootMenuBar .RootMenuButton:hover {
     color: var(--fg-bright);
 }
 
-/* the tabs */
+/* The tabs. Iosevka is narrower than Steam's font, so the letters are spaced out until a tab is as wide
+   as Steam's own and the next one starts where it always did */
 .DesktopUI .SuperNav .MenuButton {
-    position: relative;
     color: var(--fg-dim) !important;
+    font-weight: 600 !important;
+    letter-spacing: var(--tab-spacing) !important;
 }
 .DesktopUI .SuperNav .MenuButton:hover,
 .DesktopUI .SuperNav .Selected .MenuButton {
@@ -310,32 +232,14 @@ body .DialogButton.Primary:hover:not(:disabled) {
 }
 @container style(--lowercase-tabs: on) {
     .DesktopUI .SuperNav .MenuButton {
-        font-size: 14px !important;
-        font-weight: 600 !important;
-        line-height: 22px !important;
-        height: 22px !important;
-        letter-spacing: 0 !important;
         text-transform: lowercase !important;
     }
-    .DesktopUI .SuperNav .SuperNavMenu {
-        padding: 0 9px !important;
-        height: auto !important;
-    }
-    .DesktopUI .SuperNav .Arrow {
-        transform: scale(0.8);
-    }
-    /* the open tab: a 1px line that sits on the bar's own bottom line (22px text in a 36px bar: 7px down) */
-    .DesktopUI .SuperNav .Selected .MenuButton::after {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: auto;
-        bottom: -8px;
-        width: auto;
-        height: 1px;
-        border-radius: 0;
-        background: var(--fg-bright);
-    }
+}
+/* the open tab: Steam's thick underline becomes a 1px one */
+.DesktopUI .SuperNav .Selected .MenuButton::after {
+    height: 1px;
+    border-radius: 0;
+    background: var(--fg-bright);
 }
 
 /* bell and account: flat glass instead of filled boxes */
@@ -354,9 +258,13 @@ body .DialogButton.Primary:hover:not(:disabled) {
     box-shadow: none !important;
 }
 @container style(--hide-title-buttons: on) {
-    .DesktopUI .TitleBarControls .tool-tip-source:has(> .AnnouncementsButton),
-    .DesktopUI .TitleBarControls .tool-tip-source:has(> .GamepadUIToggle) {
+    /* the megaphone is the first of the group, so taking it out moves nothing */
+    .DesktopUI .TitleBarControls .tool-tip-source:has(> .AnnouncementsButton) {
         display: none !important;
+    }
+    /* Big Picture is the last. It keeps its space, or the bell and your name would slide over */
+    .DesktopUI .TitleBarControls .tool-tip-source:has(> .GamepadUIToggle) {
+        visibility: hidden;
     }
 }
 
@@ -369,7 +277,7 @@ body .DialogButton.Primary:hover:not(:disabled) {
     background: none !important;
     box-shadow: none !important;
     height: 32px;
-    padding: var(--inset) var(--inset) 0;
+    padding: 4px var(--inset) 0;
 }
 .DesktopUI .GameListHomeAndSearch .HomeBox,
 .DesktopUI .GameListHomeAndSearch .CollectionsButton {
@@ -402,7 +310,7 @@ body .DialogButton.Primary:hover:not(:disabled) {
     padding: var(--gap) var(--inset) 0;
 }
 .DesktopUI .LeftListSizableContainer > .Container > .Bar + .Container {
-    margin: var(--gap) var(--inset) var(--inset);
+    margin: var(--gap) var(--inset);
     background: var(--glass) !important;
     border-radius: var(--corners) !important;
 }
@@ -511,17 +419,30 @@ body .DialogButton.Primary:hover:not(:disabled) {
     fill: var(--ink) !important;
 }
 
-/* black-and-white game pictures */
-@container style(--mono-art: on) or style(--mono-art: hover) {
+/* ---------------------------------------------------------------- pictures
+   Steam's library is a wall of cover art. quiet and grey turn it down so the wallpaper and the text carry
+   the look: pictures go black-and-white and a little darker, and a game's page shows its logo on the wallpaper
+   instead of a banner. With quiet, a picture shows its colours while the mouse is on it */
+@container style(--pictures: quiet) or style(--pictures: grey) {
     .DesktopUI .MainPanel img,
     .DesktopUI .LeftListSizableContainer img {
-        filter: grayscale(1);
+        filter: grayscale(1) brightness(0.7);
         transition: filter 0.15s;
     }
+    /* a game's logo is its title here, so it stays at full brightness */
+    .DesktopUI .MainPanel img.TitleLogo {
+        filter: grayscale(1);
+    }
+
+    /* a game's page: the banner and the blurred copies of it behind the page are not drawn, so the
+       wallpaper shows and the logo stands on it. The space stays, so Play is where it always was */
+    .DesktopUI .MainPanel .HeaderBackgroundImage {
+        visibility: hidden;
+    }
 }
-@container style(--mono-art: hover) {
+@container style(--pictures: quiet) {
     .DesktopUI .MainPanel img:hover,
-    .DesktopUI .MainPanel a:hover img,
+    .DesktopUI .MainPanel :is(a, .LibraryItemBox):hover img,
     .DesktopUI .LeftListSizableContainer :is(.Installed, .Uninstalled):hover img {
         filter: none;
     }

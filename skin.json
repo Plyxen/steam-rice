@@ -1,8 +1,8 @@
 {
     "name": "steam-rice",
     "author": "Pota",
-    "description": "Linux-rice look for Steam: misty wallpaper behind the library, panes split by thin lines, Iosevka, one thin top bar, window dots. Greyscale without extra rules: a small script recolours Steam's own style sheets.",
-    "version": "1.1.0",
+    "description": "Linux-rice look for Steam: misty wallpaper behind the library, panes split by thin lines, Iosevka, quiet black-and-white pictures. Nothing in the top bar is moved. Greyscale without extra rules: a small script recolours Steam's own style sheets.",
+    "version": "1.2.0",
     "tags": [
         "Dark",
         "Minimal",
@@ -133,33 +133,33 @@
                 }
             }
         },
-        "Black-and-white game art": {
-            "description": "Game pictures in the library. Hover shows a picture in colour while the mouse is on it.",
-            "default": "Off",
+        "Pictures": {
+            "description": "Quiet: game pictures are black-and-white and a little darker until the mouse is on them, and a game page opens on its logo instead of a banner. Grey: the same, without the colour under the mouse. Steam: as Steam has them.",
+            "default": "Quiet",
             "tab": "Look",
             "values": {
-                "Off": {
+                "Quiet": {
                     "TargetCss": {
                         "affects": [
                             ".*"
                         ],
-                        "src": "options/mono-art-off.css"
+                        "src": "options/pictures-quiet.css"
                     }
                 },
-                "On": {
+                "Grey": {
                     "TargetCss": {
                         "affects": [
                             ".*"
                         ],
-                        "src": "options/mono-art-on.css"
+                        "src": "options/pictures-grey.css"
                     }
                 },
-                "Hover": {
+                "Steam": {
                     "TargetCss": {
                         "affects": [
                             ".*"
                         ],
-                        "src": "options/mono-art-hover.css"
+                        "src": "options/pictures-steam.css"
                     }
                 }
             }
@@ -195,17 +195,17 @@
                 }
             }
         },
-        "One-row top bar": {
-            "description": "Menus, tabs and window buttons share a single row.",
+        "Lowercase tabs": {
+            "description": "store library community, instead of STORE LIBRARY COMMUNITY. They stay where Steam has them either way.",
             "default": "yes",
-            "tab": "Layout",
+            "tab": "Top bar",
             "values": {
                 "yes": {
                     "TargetCss": {
                         "affects": [
                             ".*"
                         ],
-                        "src": "options/one-row-bar-yes.css"
+                        "src": "options/lowercase-tabs-yes.css"
                     }
                 },
                 "no": {
@@ -213,15 +213,15 @@
                         "affects": [
                             ".*"
                         ],
-                        "src": "options/one-row-bar-no.css"
+                        "src": "options/lowercase-tabs-no.css"
                     }
                 }
             }
         },
-        "Window buttons as dots": {
-            "description": "Three small dots that light up under the mouse, instead of - [] x.",
+        "Dots in the window buttons": {
+            "description": "A dot that lights up under the mouse, instead of - [] x. The buttons keep their size and place.",
             "default": "yes",
-            "tab": "Layout",
+            "tab": "Top bar",
             "values": {
                 "yes": {
                     "TargetCss": {
@@ -244,7 +244,7 @@
         "Hide megaphone and Big Picture buttons": {
             "description": "The two extra buttons in the top bar. View > Big Picture Mode still works.",
             "default": "yes",
-            "tab": "Declutter",
+            "tab": "Top bar",
             "values": {
                 "yes": {
                     "TargetCss": {
@@ -266,8 +266,8 @@
         },
         "Hide What's New": {
             "description": "The news strip at the top of the library home.",
-            "default": "no",
-            "tab": "Declutter",
+            "default": "yes",
+            "tab": "Library",
             "values": {
                 "yes": {
                     "TargetCss": {
