@@ -1,0 +1,4 @@
+/* steam-rice option "Hide megaphone and Big Picture buttons": yes */
+:root {
+    --hide-title-buttons: on !important;
+}

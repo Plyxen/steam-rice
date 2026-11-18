@@ -1,16 +1,14 @@
 # steam-rice installer for Windows.
 # Copies the theme into Millennium's themes folder. Run it again to update.
 #
-#   .\install.ps1                 install from this folder
-#   .\install.ps1 -Build          also rebuild mono.css from your own Steam files first (needs Node.js)
-#   .\install.ps1 -Steam D:\Steam  when Steam is not where the registry says
+#   .\install.ps1                   install from this folder
+#   .\install.ps1 -Steam D:\Steam   when Steam is not where the registry says
 #
 # One-liner without cloning:
 #   irm https://raw.githubusercontent.com/Plyxen/steam-rice/main/install.ps1 | iex
 
 param(
-    [string]$Steam,
-    [switch]$Build
+    [string]$Steam
 )
 
 $ErrorActionPreference = 'Stop'
@@ -25,7 +23,6 @@ if (-not $Steam -or -not (Test-Path (Join-Path $Steam 'steam.exe'))) {
 }
 $Steam = (Resolve-Path $Steam).Path
 
-$themes = Join-Path $Steam 'millennium\themes'
 if (-not (Test-Path (Join-Path $Steam 'millennium'))) {
     Write-Host 'Millennium is not installed in this Steam. Get it from https://steambrew.app first, then run this again.' -ForegroundColor Red
     exit 1
@@ -44,27 +41,25 @@ if (-not $source -or -not (Test-Path (Join-Path $source 'skin.json'))) {
     $source = Join-Path $temp 'steam-rice-main'
 }
 
-if ($Build) {
-    if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
-        Write-Host 'Node.js is needed for -Build and was not found. Installing the mono.css that came with the theme instead.' -ForegroundColor Yellow
-    } else {
-        & node (Join-Path $source 'build.mjs') $Steam
-        if ($LASTEXITCODE -ne 0) { Write-Host 'build.mjs failed, keeping the mono.css that came with the theme.' -ForegroundColor Yellow }
-    }
-}
-
-$target = Join-Path $themes 'steam-rice'
+$target = Join-Path $Steam 'millennium\themes\steam-rice'
 New-Item -ItemType Directory -Force -Path $target | Out-Null
-# only the files Steam loads. The options folder is replaced whole so renamed options don't pile up
-foreach ($file in 'skin.json', 'mono.css', 'rice.css', 'webkit.css', 'build.mjs', 'LICENSE') {
-    $from = Join-Path $source $file
-    if (Test-Path $from) { Copy-Item $from (Join-Path $target $file) -Force }
+
+# only the files Steam loads
+foreach ($file in 'skin.json', 'rice.css', 'mono.js', 'webkit.css', 'wallpaper.jpg', 'LICENSE') {
+    Copy-Item (Join-Path $source $file) (Join-Path $target $file) -Force
 }
+# the options folder is replaced whole, so options that were renamed or dropped don't pile up
 $options = Join-Path $target 'options'
 if (Test-Path $options) { Remove-Item $options -Recurse -Force }
 Copy-Item (Join-Path $source 'options') $options -Recurse
+# files that versions before 1.1 put here
+foreach ($old in 'mono.css', 'build.mjs') {
+    $path = Join-Path $target $old
+    if (Test-Path $path) { Remove-Item $path -Force }
+}
 
 if ($temp) { Remove-Item $temp -Recurse -Force }
 
 Write-Host "Installed to $target" -ForegroundColor Green
 Write-Host 'In Steam: Steam menu > Millennium > Themes, pick steam-rice. Its options are under the cog next to it.'
+Write-Host 'The grey comes from a small script (mono.js), so leave "JavaScript" allowed for themes in Millennium.'

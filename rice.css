@@ -1,5 +1,6 @@
-/* steam-rice: the hand-written half. Layout, wallpaper, lines, font and the options.
-   The greyscale itself is in mono.css, which build.mjs makes from Steam's own style sheets.
+/* steam-rice: layout, wallpaper, lines, font and the options.
+   The greyscale is not in here. mono.js rewrites the colours in Steam's own style sheets, so this file
+   only adds what Steam doesn't have: about a hundred rules.
    https://github.com/Plyxen/steam-rice   GPL-3.0-or-later */
 
 /* Iosevka, the usual rice terminal font. 400 for text, 600 for names and headings */
@@ -8,8 +9,8 @@
 
 /* ================================================================
    options
-   Millennium's theme settings set these (the files in options/). Without them, edit the values here.
-   The on / off ones are read further down with style queries: @container style(--name: on)
+   Millennium's theme settings set most of these (the files in options/). The rest, and your own
+   wallpaper, are edited here. The on / off ones are read with style queries: @container style(--name: on)
    ================================================================ */
 :root {
     /* font: 'Iosevka' for the terminal look, 'Motiva Sans' for Steam's own */
@@ -18,8 +19,8 @@
     /* corners: small, like a tiling WM. 0px for dead sharp. Avatars stay as Steam draws them */
     --corners: 3px;
 
-    /* wallpaper: any image url works. The default is the misty forest, embedded at the bottom of this file */
-    --wallpaper: var(--wallpaper-default);
+    /* wallpaper: any image url works. The default is the misty forest next to this file */
+    --wallpaper: url('wallpaper.jpg');
     --wallpaper-dim: 0.5; /* 0 = raw wallpaper, 1 = black. Raise it if text is hard to read */
     --grain: on; /* off | on: film grain over the wallpaper */
 
@@ -28,9 +29,13 @@
     --window-dots: on; /* off | on: small dots instead of - [] x. They light up under the mouse */
     --dot-size: 13px;
 
+    /* everything keeps the same distance from the window's edge: the first menu, the game list's boxes,
+       the bottom bar's icons, the window dots */
+    --inset: 8px;
+    --gap: 6px; /* between the boxes at the top of the game list */
+
     /* ---- declutter (on = hidden) ---- */
-    --hide-announcements: on; /* the megaphone button in the title bar */
-    --hide-big-picture: on; /* the Big Picture button in the title bar (View > Big Picture Mode still works) */
+    --hide-title-buttons: on; /* the megaphone and Big Picture buttons in the top bar (View > Big Picture Mode still works) */
     --hide-whats-new: off; /* the news strip at the top of the library home */
     --hide-add-shelf: on; /* the "Add shelf" row on the library home */
     --hide-add-game: off; /* "Add a Game" in the bottom bar (Games > Add a Non-Steam Game still works) */
@@ -39,7 +44,7 @@
     --mono-art: off; /* off | on | hover: black-and-white game pictures in the library. hover = colour under the mouse */
 }
 
-/* colours. mono.css has already turned Steam grey, these are for what this file draws itself */
+/* colours. mono.js has already turned Steam grey, these are for what this file draws itself */
 :root {
     --ink: hsl(0, 0%, 8%); /* dark text on the light buttons */
     --fg-bright: hsl(0, 0%, 98%);
@@ -55,18 +60,14 @@
     --active: hsla(0, 0%, 100%, 0.1);
     --pressed: hsla(0, 0%, 100%, 0.14);
 
-    /* solid surfaces, for windows that have no wallpaper behind them */
-    --popup: hsl(0, 0%, 11%); /* menus, tooltips */
-    --panel: hsl(0, 0%, 8%); /* dialogs, settings */
+    --popup: hsl(0, 0%, 11%); /* menus: their windows have no wallpaper behind them */
 
-    /* lines. --line splits the panes */
-    --line: hsla(0, 0%, 100%, 0.12);
+    --line: hsla(0, 0%, 100%, 0.12); /* splits the panes */
     --edge: hsla(0, 0%, 100%, 0.08);
     --edge-strong: hsla(0, 0%, 100%, 0.14);
 
     --button: hsl(0, 0%, 88%);
     --button-hover: hsl(0, 0%, 80%);
-    --button-press: hsl(0, 0%, 72%);
 
     /* the only colours, muted */
     --red: oklch(70% 0.12 15);
@@ -80,16 +81,15 @@
         radial-gradient(ellipse at 60% 40%, transparent 35%, hsla(0, 0%, 0%, 0.45) 100%),
         linear-gradient(90deg, hsla(0, 0%, 0%, 0.5) 0%, hsla(0, 0%, 0%, 0.3) 30%, transparent 50%),
         linear-gradient(hsla(0, 0%, 0%, var(--wallpaper-dim)), hsla(0, 0%, 0%, var(--wallpaper-dim)));
-    --grain-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='900'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 .07'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    --grain-layer: var(--grain-on);
+    --grain-layer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='900'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 .07'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
-    /* Steam's own corner sizes and font, from the options above */
-    --radius-sm: min(var(--corners), 2px);
-    --radius-md: var(--corners);
-    --radius-lg: calc(var(--corners) * 1.34);
+    /* mono.js points every font Steam names at --rice-font. These are Steam's own names for font and corners */
     --rice-font: var(--font), 'Motiva Sans', Twemoji, 'Noto Sans', Helvetica, sans-serif;
     --font-family: var(--rice-font);
     --MillenniumText-Font: var(--rice-font);
+    --radius-sm: min(var(--corners), 2px);
+    --radius-md: var(--corners);
+    --radius-lg: calc(var(--corners) * 1.34);
     --MillenniumControls-BorderRadius: var(--corners);
 }
 
@@ -101,30 +101,21 @@
 }
 
 /* ================================================================
-   font and corners, every window
+   every window: font, corners, scrollbars, buttons
    ================================================================ */
-body,
-body * {
-    font-family: var(--rice-font) !important;
-}
-
-/* Iosevka is narrow, so Steam's wide letter spacing on headings reads as gaps */
-body .SectionName,
-body .PlayBarLabel {
-    letter-spacing: 0.02em;
+body {
+    font-family: var(--rice-font);
 }
 
 body .DialogButton,
 body .DialogInput,
 body .DialogDropDown,
-body .DialogTextInputBase,
 body .contextMenuContents,
 body .PlayButtonContainer,
 body .AlertButton {
     border-radius: var(--corners) !important;
 }
 
-/* thin grey scrollbars */
 body ::-webkit-scrollbar {
     width: 8px !important;
     height: 8px !important;
@@ -142,13 +133,67 @@ body ::-webkit-scrollbar-thumb:hover {
     background-color: hsla(0, 0%, 100%, 0.3) !important;
 }
 
+body .DialogButton {
+    background: var(--raised) !important;
+    color: var(--fg-strong) !important;
+    box-shadow: none !important;
+}
+body .DialogButton:hover:not(:disabled) {
+    background: var(--pressed) !important;
+    color: var(--fg-bright) !important;
+}
+body .DialogButton.Primary {
+    background: var(--button) !important;
+    color: var(--ink) !important;
+}
+body .DialogButton.Primary:hover:not(:disabled) {
+    background: var(--button-hover) !important;
+    color: var(--ink) !important;
+}
+
+/* window buttons, on every window that has them */
+.title-area .title-area-highlight {
+    display: none !important;
+}
+@container style(--window-dots: on) {
+    .title-area .window-controls {
+        gap: 8px;
+        padding: 0 var(--inset);
+        /* Steam caps this row at 32px, which leaves the dots above the bar's centre line */
+        height: 100% !important;
+        max-height: none !important;
+        align-items: center;
+    }
+    .title-area .windowControlButton {
+        width: var(--dot-size) !important;
+        height: var(--dot-size) !important;
+        min-width: 0 !important;
+        border-radius: 50% !important;
+        background: hsla(0, 0%, 100%, 0.2) !important;
+        transition: background-color 0.12s;
+    }
+    .title-area .windowControlButton > .title-area-icon-inner {
+        display: none !important;
+    }
+    .title-area .closeButton:hover {
+        background: var(--red) !important;
+    }
+    .title-area .maximizeButton:hover,
+    .title-area .restoreButton:hover {
+        background: var(--green) !important;
+    }
+    .title-area .minimizeButton:hover {
+        background: var(--yellow) !important;
+    }
+}
+
 /* ================================================================
    the main window: wallpaper behind everything, panes see-through, thin lines between them
    ================================================================ */
 .MillenniumWindow_MainSteamWindow .Wrapper.ForceOpaqueBackground {
     background-color: black !important;
     background-image: var(--grain-layer), var(--wallpaper-shade), var(--wallpaper) !important;
-    /* grain repeats at its own size, the shades fill the window, the picture covers it */
+    /* grain repeats at its own size, the four shades fill the window, the picture covers it */
     background-size: auto, auto, auto, auto, auto, cover !important;
     background-position: center !important;
     border: none !important;
@@ -166,17 +211,24 @@ body ::-webkit-scrollbar-thumb:hover {
     box-shadow: none !important;
     border-bottom: 1px solid var(--line);
 }
-
+.DesktopUI .SuperNavBar {
+    background: none !important;
+}
 /* the 12px strip Steam keeps where the address bar would be */
 .DesktopUI .URLBarReplacement {
     display: none !important;
 }
-
-.DesktopUI .SuperNavBar {
+/* the address bar on store and community pages: see-through like the bar above it, its first icon on --inset */
+.DesktopUI .URLBar {
     background: none !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid var(--line);
+    padding-left: calc(var(--inset) - 8px);
 }
 
-/* one row: the title bar's parts and the tabs line up as  menus | tabs | drag space | buttons | window dots */
+/* One row:  menus  tabs  ....drag space....  buttons  window dots
+   Steam has the menus and the tabs in two rows. Its first row is dissolved (display: contents) so its parts
+   and the tabs become one flex row, all centred on the same line */
 @container style(--one-row-bar: on) {
     .DesktopUI .TopBar {
         display: flex;
@@ -184,38 +236,34 @@ body ::-webkit-scrollbar-thumb:hover {
         align-items: center;
         height: 36px;
     }
-    .DesktopUI .TopBar .RootMenuBar,
-    .DesktopUI .TopBar .TitleBarControls {
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-    /* Steam pins the window buttons to the corner. In the row they take their own place at the end */
-    .DesktopUI .TopBar .WindowControls .title-area {
-        position: static;
-        height: 100%;
-    }
     .DesktopUI .TopBar > .TitleBar {
         display: contents;
     }
     .DesktopUI .TopBar .RootMenuBar {
         order: 1;
         flex: none;
-        top: 0;
         height: 100%;
+        margin: 0;
+        /* a menu has 4px of its own padding, so its first letter lands on --inset */
+        padding: 0 0 0 calc(var(--inset) - 4px);
         align-items: center;
     }
     .DesktopUI .TopBar > .SuperNavBar {
         order: 2;
         flex: none;
         height: 100%;
-        margin-left: 6px;
-        padding-left: 10px;
-        border-left: 1px solid var(--line);
+        margin: 0 0 0 10px;
+        padding: 0;
     }
     .DesktopUI .TopBar .SuperNav {
         height: 100%;
-        align-items: center;
+        margin: 0;
         padding: 0;
+        align-items: center;
+    }
+    /* back and forward: Steam pads them unevenly, which pushes them off the line */
+    .DesktopUI .TopBar .SuperNav .Arrow {
+        padding: 0 4px;
         margin: 0;
     }
     .DesktopUI .TopBar .DragArea {
@@ -228,18 +276,22 @@ body ::-webkit-scrollbar-thumb:hover {
     .DesktopUI .TopBar .TitleBarControls {
         order: 4;
         flex: none;
-        top: 0;
-        align-items: center;
         height: 100%;
+        margin: 0 4px 0 0;
+        align-items: center;
     }
     .DesktopUI .TopBar .WindowControls {
         order: 5;
         flex: none;
         height: 100%;
     }
+    /* Steam pins the window buttons to the corner. In the row they take their own place at the end */
+    .DesktopUI .TopBar .WindowControls .title-area {
+        position: static;
+        height: 100%;
+    }
 }
 
-/* the menus: Steam View Friends Games Help */
 .DesktopUI .RootMenuBar .RootMenuButton {
     color: var(--fg-dim);
 }
@@ -248,6 +300,14 @@ body ::-webkit-scrollbar-thumb:hover {
 }
 
 /* the tabs */
+.DesktopUI .SuperNav .MenuButton {
+    position: relative;
+    color: var(--fg-dim) !important;
+}
+.DesktopUI .SuperNav .MenuButton:hover,
+.DesktopUI .SuperNav .Selected .MenuButton {
+    color: var(--fg-bright) !important;
+}
 @container style(--lowercase-tabs: on) {
     .DesktopUI .SuperNav .MenuButton {
         font-size: 14px !important;
@@ -264,15 +324,21 @@ body ::-webkit-scrollbar-thumb:hover {
     .DesktopUI .SuperNav .Arrow {
         transform: scale(0.8);
     }
-}
-.DesktopUI .SuperNav .MenuButton {
-    color: var(--fg-dim) !important;
-}
-.DesktopUI .SuperNav .MenuButton:hover {
-    color: var(--fg-bright) !important;
+    /* the open tab: a 1px line that sits on the bar's own bottom line (22px text in a 36px bar: 7px down) */
+    .DesktopUI .SuperNav .Selected .MenuButton::after {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: auto;
+        bottom: -8px;
+        width: auto;
+        height: 1px;
+        border-radius: 0;
+        background: var(--fg-bright);
+    }
 }
 
-/* title bar buttons: flat glass instead of filled boxes */
+/* bell and account: flat glass instead of filled boxes */
 .DesktopUI .TitleBarControls .Button,
 .DesktopUI .TitleBarControls .AccountMenu {
     background: var(--glass) !important;
@@ -287,60 +353,30 @@ body ::-webkit-scrollbar-thumb:hover {
     border: none !important;
     box-shadow: none !important;
 }
-
-@container style(--hide-announcements: on) {
-    .DesktopUI .TitleBarControls .tool-tip-source:has(> .AnnouncementsButton) {
-        display: none !important;
-    }
-}
-@container style(--hide-big-picture: on) {
+@container style(--hide-title-buttons: on) {
+    .DesktopUI .TitleBarControls .tool-tip-source:has(> .AnnouncementsButton),
     .DesktopUI .TitleBarControls .tool-tip-source:has(> .GamepadUIToggle) {
         display: none !important;
     }
 }
 
-/* window buttons */
-.title-area .title-area-highlight {
-    display: none !important;
-}
-@container style(--window-dots: on) {
-    .title-area .window-controls {
-        gap: 8px;
-        padding: 0 12px 0 8px;
-        align-items: center;
-        height: 100%;
-    }
-    .title-area .windowControlButton {
-        width: var(--dot-size) !important;
-        height: var(--dot-size) !important;
-        min-width: 0 !important;
-        border-radius: 50% !important;
-        background: hsla(0, 0%, 100%, 0.2) !important;
-        transition: background-color 0.12s;
-    }
-    .title-area .windowControlButton > * {
-        display: none !important;
-    }
-    .title-area .windowControlButton.closeButton:hover {
-        background: var(--red) !important;
-    }
-    .title-area .windowControlButton.maximizeButton:hover,
-    .title-area .windowControlButton.restoreButton:hover {
-        background: var(--green) !important;
-    }
-    .title-area .windowControlButton.minimizeButton:hover {
-        background: var(--yellow) !important;
-    }
-}
-
-/* ---------------------------------------------------------------- library: the game list on the left */
+/* ---------------------------------------------------------------- library: the game list on the left
+   Its boxes (Home, the collection dropdown, search) share one inset from both edges and one gap between rows */
 .DesktopUI .LeftListSizableContainer > .Container {
     background: none !important;
-    border-right: 1px solid var(--line);
 }
 .DesktopUI .GameListHomeAndSearch {
     background: none !important;
     box-shadow: none !important;
+    height: 32px;
+    padding: var(--inset) var(--inset) 0;
+}
+.DesktopUI .GameListHomeAndSearch .HomeBox,
+.DesktopUI .GameListHomeAndSearch .CollectionsButton {
+    height: 32px;
+}
+.DesktopUI .GameListHomeAndSearch .CollectionButton {
+    margin-left: var(--gap);
 }
 .DesktopUI .GameListHomeAndSearch .Bar {
     background: var(--glass) !important;
@@ -360,18 +396,25 @@ body ::-webkit-scrollbar-thumb:hover {
     opacity: 0.25;
 }
 
-/* "Games and Software", the search box and their buttons */
-.DesktopUI .LeftListSizableContainer .MenuHeader,
-.DesktopUI .LeftListSizableContainer .SearchInput,
-.DesktopUI .LeftListSizableContainer .AdvancedSearchContainer,
-.DesktopUI .LeftListSizableContainer .Container:has(> .SearchInput) {
-    background: none !important;
-    box-shadow: none !important;
+/* the collection dropdown row, then the search row right after it */
+.DesktopUI .LeftListSizableContainer > .Container > .Bar {
+    height: calc(32px + var(--gap));
+    padding: var(--gap) var(--inset) 0;
 }
-.DesktopUI .LeftListSizableContainer .MenuHeader,
-.DesktopUI .LeftListSizableContainer .Container:has(> .SearchInput) {
+.DesktopUI .LeftListSizableContainer > .Container > .Bar + .Container {
+    margin: var(--gap) var(--inset) var(--inset);
     background: var(--glass) !important;
     border-radius: var(--corners) !important;
+}
+.DesktopUI .LeftListSizableContainer .MenuHeader {
+    background: var(--glass) !important;
+    border-radius: var(--corners) !important;
+    box-shadow: none !important;
+}
+.DesktopUI .LeftListSizableContainer .SearchInput,
+.DesktopUI .LeftListSizableContainer .AdvancedSearchContainer {
+    background: none !important;
+    box-shadow: none !important;
 }
 .DesktopUI .LeftListSizableContainer .SearchInput .DialogInput {
     background-color: transparent !important;
@@ -379,7 +422,7 @@ body ::-webkit-scrollbar-thumb:hover {
     box-shadow: none !important;
 }
 
-/* collection headers: no gradient bar, just the name and a line */
+/* collection headers: no gradient bar, just the name */
 .DesktopUI .LeftListSizableContainer .CollapseIconParent {
     background: none !important;
     border: none !important;
@@ -388,24 +431,29 @@ body ::-webkit-scrollbar-thumb:hover {
 .DesktopUI .LeftListSizableContainer .SectionName {
     color: var(--fg-dim);
     font-weight: 600;
+    letter-spacing: 0.02em;
 }
 
-/* game rows */
-.DesktopUI .LeftListSizableContainer .Container:has(> .GameListEntryContainer) {
+/* game rows: a flat bar from edge to edge, like a file manager's cursor */
+.DesktopUI .LeftListSizableContainer :is(.Installed, .Uninstalled) {
     box-shadow: none !important;
-    border-radius: var(--corners);
 }
-.DesktopUI .LeftListSizableContainer .Container:has(> .GameListEntryContainer):hover {
+.DesktopUI .LeftListSizableContainer :is(.Installed, .Uninstalled):hover {
     background: var(--hover) !important;
 }
-.DesktopUI .LeftListSizableContainer .Container.Selected:has(> .GameListEntryContainer) {
+.DesktopUI .LeftListSizableContainer :is(.Installed, .Uninstalled).Selected {
     background: var(--active) !important;
 }
-.DesktopUI .LeftListSizableContainer .Container.Uninstalled .GameListEntryContainer {
+.DesktopUI .LeftListSizableContainer .Uninstalled .GameListEntryContainer {
     color: var(--fg-faint);
 }
 
 /* ---------------------------------------------------------------- library: the right side */
+/* the line between the list and the page. Drawn by the page, just outside its left edge, so it stays
+   put while the list is dragged wider */
+.DesktopUI .MainPanel {
+    box-shadow: -1px 0 0 var(--line);
+}
 .DesktopUI .MainPanel .AppDetailsTransitionGroup,
 .DesktopUI .MainPanel .AppDetailsMain > .Container,
 .DesktopUI .MainPanel .AppDetailsMain .Body,
@@ -419,6 +467,10 @@ body ::-webkit-scrollbar-thumb:hover {
 .DesktopUI .MainPanel .UpdatesContainer {
     border-bottom: 1px solid var(--line);
 }
+.DesktopUI .MainPanel .Showcase {
+    border-color: transparent !important;
+    background: none !important;
+}
 
 @container style(--hide-whats-new: on) {
     .DesktopUI .MainPanel .UpdatesContainer {
@@ -431,13 +483,7 @@ body ::-webkit-scrollbar-thumb:hover {
     }
 }
 
-/* shelves: no boxes around them */
-.DesktopUI .MainPanel .Showcase {
-    border-color: transparent !important;
-    background: none !important;
-}
-
-/* a game's page: the bar with Play, and the frosted panel under the header picture */
+/* a game's page: the bar with Play */
 .DesktopUI .MainPanel .PlayBar.Glassy {
     background: hsla(0, 0%, 0%, 0.35) !important;
     border-bottom: 1px solid var(--line);
@@ -448,26 +494,20 @@ body ::-webkit-scrollbar-thumb:hover {
 }
 
 /* Play, Install, Update: one light button with dark text. Running and queued states keep Steam's (muted) colour */
-.DesktopUI .PlayButtonContainer.Green .PlayButton,
-.DesktopUI .PlayButtonContainer.Blue .PlayButton,
-.DesktopUI .PlayButtonContainer.Green .MenuButton,
-.DesktopUI .PlayButtonContainer.Blue .MenuButton {
+.DesktopUI .PlayButtonContainer:is(.Green, .Blue) :is(.PlayButton, .MenuButton) {
     background: var(--button) !important;
     color: var(--ink) !important;
     box-shadow: none !important;
     text-shadow: none !important;
 }
-.DesktopUI .PlayButtonContainer.Green .PlayButton *,
-.DesktopUI .PlayButtonContainer.Blue .PlayButton * {
+.DesktopUI .PlayButtonContainer:is(.Green, .Blue) .PlayButton:hover {
+    background: var(--button-hover) !important;
+}
+.DesktopUI .PlayButtonContainer:is(.Green, .Blue) .ButtonText {
     color: var(--ink) !important;
     text-shadow: none !important;
 }
-.DesktopUI .PlayButtonContainer.Green .PlayButton:hover,
-.DesktopUI .PlayButtonContainer.Blue .PlayButton:hover {
-    background: var(--button-hover) !important;
-}
-.DesktopUI .PlayButtonContainer.Green .PlayButton svg,
-.DesktopUI .PlayButtonContainer.Blue .PlayButton svg {
+.DesktopUI .PlayButtonContainer:is(.Green, .Blue) .SVGIcon_Button {
     fill: var(--ink) !important;
 }
 
@@ -482,8 +522,7 @@ body ::-webkit-scrollbar-thumb:hover {
 @container style(--mono-art: hover) {
     .DesktopUI .MainPanel img:hover,
     .DesktopUI .MainPanel a:hover img,
-    .DesktopUI .MainPanel .Focusable:hover > img,
-    .DesktopUI .LeftListSizableContainer .Container:hover img {
+    .DesktopUI .LeftListSizableContainer :is(.Installed, .Uninstalled):hover img {
         filter: none;
     }
 }
@@ -493,6 +532,8 @@ body ::-webkit-scrollbar-thumb:hover {
     background: none !important;
     box-shadow: none !important;
     border-top: 1px solid var(--line);
+    /* its buttons have 5px of their own padding, so their icons land on --inset */
+    padding: 0 calc(var(--inset) - 5px);
 }
 .DesktopUI .BottomBar .Text,
 .DesktopUI .BottomBar .Queue {
@@ -508,6 +549,14 @@ body ::-webkit-scrollbar-thumb:hover {
     .DesktopUI .BottomBar .AddGameButton {
         visibility: hidden;
     }
+}
+/* the resize grip is 24px of the corner and would sit under the friends icon. The window's edges still resize */
+.DesktopUI .BottomBar .window_resize_grip {
+    width: 10px;
+    height: 10px;
+    background-size: 20px;
+    background-position: bottom right;
+    opacity: 0.5;
 }
 
 /* the "restart to update" strip above the bottom bar */
@@ -528,42 +577,11 @@ body ::-webkit-scrollbar-thumb:hover {
     border: 1px solid var(--edge-strong) !important;
     padding: 4px !important;
 }
-.ContextMenuPopupBody .contextMenuContents .MenuItem,
 .ContextMenuPopupBody .contextMenuContents .contextMenuItem {
     border-radius: max(0px, calc(var(--corners) - 1px));
     color: var(--fg);
 }
-.ContextMenuPopupBody .contextMenuContents .MenuItem:hover,
 .ContextMenuPopupBody .contextMenuContents .contextMenuItem:hover {
     background: var(--active) !important;
     color: var(--fg-bright) !important;
-}
-
-/* ================================================================
-   buttons and fields, every window
-   ================================================================ */
-body .DialogButton {
-    background: var(--raised) !important;
-    color: var(--fg-strong) !important;
-    box-shadow: none !important;
-}
-body .DialogButton:hover:not(:disabled) {
-    background: var(--pressed) !important;
-    color: var(--fg-bright) !important;
-}
-body .DialogButton.Primary {
-    background: var(--button) !important;
-    color: var(--ink) !important;
-}
-body .DialogButton.Primary:hover:not(:disabled) {
-    background: var(--button-hover) !important;
-    color: var(--ink) !important;
-}
-body .DialogButton:disabled {
-    opacity: 0.5;
-}
-
-/* the misty forest. Small on purpose: it is mist, and the grain hides the rest */
-:root {
-    --wallpaper-default: url("data:image/jpeg;base64,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");
 }

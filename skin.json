@@ -1,8 +1,8 @@
 {
     "name": "steam-rice",
     "author": "Pota",
-    "description": "Linux-rice look for Steam: misty wallpaper behind the library, panes split by thin lines, Iosevka, greyscale with art left in colour, one-row top bar, window dots.",
-    "version": "1.0.0",
+    "description": "Linux-rice look for Steam: misty wallpaper behind the library, panes split by thin lines, Iosevka, one thin top bar, window dots. Greyscale without extra rules: a small script recolours Steam's own style sheets.",
+    "version": "1.1.0",
     "tags": [
         "Dark",
         "Minimal",
@@ -20,11 +20,8 @@
     "Patches": [
         {
             "MatchRegexString": ".*",
-            "TargetCss": "mono.css"
-        },
-        {
-            "MatchRegexString": ".*",
-            "TargetCss": "rice.css"
+            "TargetCss": "rice.css",
+            "TargetJs": "mono.js"
         }
     ],
     "Conditions": {
@@ -168,7 +165,7 @@
             }
         },
         "Store and community pages": {
-            "description": "These are web pages, so they keep their own colours. Muted turns them down to sit next to the grey client, Greyscale removes colour, Steam leaves them alone.",
+            "description": "These are web pages with their own colours. Muted turns them down to sit next to the grey client, Greyscale removes colour, Steam leaves them alone.",
             "default": "Muted",
             "tab": "Look",
             "values": {
@@ -221,29 +218,6 @@
                 }
             }
         },
-        "Small lowercase tabs": {
-            "description": "store library community, instead of STORE LIBRARY COMMUNITY.",
-            "default": "yes",
-            "tab": "Layout",
-            "values": {
-                "yes": {
-                    "TargetCss": {
-                        "affects": [
-                            ".*"
-                        ],
-                        "src": "options/lowercase-tabs-yes.css"
-                    }
-                },
-                "no": {
-                    "TargetCss": {
-                        "affects": [
-                            ".*"
-                        ],
-                        "src": "options/lowercase-tabs-no.css"
-                    }
-                }
-            }
-        },
         "Window buttons as dots": {
             "description": "Three small dots that light up under the mouse, instead of - [] x.",
             "default": "yes",
@@ -267,8 +241,8 @@
                 }
             }
         },
-        "Hide announcements button": {
-            "description": "The megaphone in the title bar.",
+        "Hide megaphone and Big Picture buttons": {
+            "description": "The two extra buttons in the top bar. View > Big Picture Mode still works.",
             "default": "yes",
             "tab": "Declutter",
             "values": {
@@ -277,7 +251,7 @@
                         "affects": [
                             ".*"
                         ],
-                        "src": "options/hide-announcements-yes.css"
+                        "src": "options/hide-title-buttons-yes.css"
                     }
                 },
                 "no": {
@@ -285,30 +259,7 @@
                         "affects": [
                             ".*"
                         ],
-                        "src": "options/hide-announcements-no.css"
-                    }
-                }
-            }
-        },
-        "Hide Big Picture button": {
-            "description": "View > Big Picture Mode still works.",
-            "default": "yes",
-            "tab": "Declutter",
-            "values": {
-                "yes": {
-                    "TargetCss": {
-                        "affects": [
-                            ".*"
-                        ],
-                        "src": "options/hide-big-picture-yes.css"
-                    }
-                },
-                "no": {
-                    "TargetCss": {
-                        "affects": [
-                            ".*"
-                        ],
-                        "src": "options/hide-big-picture-no.css"
+                        "src": "options/hide-title-buttons-no.css"
                     }
                 }
             }
@@ -332,52 +283,6 @@
                             ".*"
                         ],
                         "src": "options/hide-whats-new-no.css"
-                    }
-                }
-            }
-        },
-        "Hide Add shelf": {
-            "description": "The \"Add shelf\" row on the library home.",
-            "default": "yes",
-            "tab": "Declutter",
-            "values": {
-                "yes": {
-                    "TargetCss": {
-                        "affects": [
-                            ".*"
-                        ],
-                        "src": "options/hide-add-shelf-yes.css"
-                    }
-                },
-                "no": {
-                    "TargetCss": {
-                        "affects": [
-                            ".*"
-                        ],
-                        "src": "options/hide-add-shelf-no.css"
-                    }
-                }
-            }
-        },
-        "Hide Add a Game": {
-            "description": "Games > Add a Non-Steam Game still works.",
-            "default": "no",
-            "tab": "Declutter",
-            "values": {
-                "yes": {
-                    "TargetCss": {
-                        "affects": [
-                            ".*"
-                        ],
-                        "src": "options/hide-add-game-yes.css"
-                    }
-                },
-                "no": {
-                    "TargetCss": {
-                        "affects": [
-                            ".*"
-                        ],
-                        "src": "options/hide-add-game-no.css"
                     }
                 }
             }

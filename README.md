@@ -8,15 +8,24 @@ Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https:/
 
 - **Tiled, no boxes.** One misty wallpaper behind the library, with the game list, the page and the bars split by 1px lines. No gradients or shadows.
 - **Greyscale.** Steam's blue-grey is gone everywhere: library, settings, menus, downloads, friends. Game art keeps its colour. Only things that mean something (playing, online, danger) keep a colour, muted.
-- **One thin top bar.** Menus, tabs and window buttons share a single row: `Steam View Friends Games Help | store library community you`. The tabs are small and lowercase.
+- **One thin top bar.** Menus, tabs and window buttons share a single row: `Steam View Friends Games Help  store library community you`. The tabs are small and lowercase, and the open one is marked on the bar's own line.
+- **On a grid.** Everything in the top bar sits on one centre line. The first menu, the game list's boxes, the bottom bar's icons and the window dots keep the same 8px from the window's edge.
 - **Window dots.** Three small dots instead of `- [] x`. They light up under the mouse.
 - **Iosevka everywhere,** small corners, thin scrollbars.
-- **Less clutter.** The announcements megaphone, the Big Picture button and the "Add shelf" row are hidden. Each can be switched back on.
+- **Less clutter.** The megaphone and Big Picture buttons and the "Add shelf" row are hidden.
 - **Store and community pages** are web pages with their own styles, so they only get the font, a neutral background and their colour turned down to sit next to the grey client.
+
+## Light
+
+About 50 KB in five files, and it adds 92 style rules to Steam's twenty thousand.
+
+Steam has almost no colour variables. Its look is some eleven thousand literal colours in its own style sheets, so themes usually override them rule by rule, which gets large and breaks when Valve renames things. This theme doesn't add colour rules at all. `mono.js` reads Steam's style sheets once at start (about 40 ms), rewrites the colours in the text, and gives every window the rewritten sheet in place of the original. Steam runs with the same number of rules as with no theme, and a Steam update needs nothing from you.
+
+`rice.css` is the rest: layout, wallpaper, lines and the options. It names Steam's parts by the readable class names Millennium adds (`TopBar`, `SuperNav`, `BottomBar`), not by Valve's generated ones, so it survives updates too.
 
 ## Install
 
-You need [Millennium](https://steambrew.app).
+You need [Millennium](https://steambrew.app), with JavaScript allowed for themes (it asks when you pick the theme; the grey is the script).
 
 Windows, in PowerShell:
 
@@ -43,33 +52,11 @@ In Millennium, open the theme's settings (the cog next to it).
 | Black-and-white game art | Off, On, Hover | Hover shows a picture in colour under the mouse. |
 | Store and community pages | Muted, Greyscale, Steam | |
 | One-row top bar | on, off | Off gives Steam's two rows back. |
-| Small lowercase tabs | on, off | |
 | Window buttons as dots | on, off | |
-| Hide announcements button | on, off | |
-| Hide Big Picture button | on, off | |
+| Hide megaphone and Big Picture buttons | on, off | |
 | Hide What's New | off, on | |
-| Hide Add shelf | on, off | |
-| Hide Add a Game | off, on | |
 
-For your own wallpaper, set `--wallpaper` at the top of `rice.css` to `url("...")`. The other values there are the same options, for editing without Millennium's window.
-
-## How the greyscale works
-
-Steam has almost no colour variables. Its look is thousands of literal colours in two large style sheets, so a theme can't recolour it by setting a few names, and hand-written themes always leave blue corners somewhere.
-
-`build.mjs` reads those two sheets from your Steam folder, takes every rule that paints something, turns the colours grey and writes the rules out again in the same order as `mono.css`. Blue becomes plain grey at the same lightness; other hues stay but muted. `rice.css` is the small hand-written part on top: wallpaper, layout, lines, font, options.
-
-## After a Steam update
-
-Valve renames Steam's style classes now and then. Nothing breaks when that happens: the rules for old names just stop matching, so those parts go back to Steam's colours until `mono.css` is rebuilt.
-
-To rebuild it from your own Steam (needs [Node.js](https://nodejs.org), no packages):
-
-```powershell
-.\install.ps1 -Build
-```
-
-`mono.css` in this repo was built from the Steam client of the date in its first lines.
+A few more are at the top of `rice.css`, each with a comment: your own wallpaper (`--wallpaper`), the edge distance (`--inset`), lowercase tabs, and hiding "Add shelf" and "Add a Game".
 
 ## Not done yet
 
@@ -79,4 +66,4 @@ To rebuild it from your own Steam (needs [Node.js](https://nodejs.org), no packa
 
 ## Licence
 
-GPL-3.0-or-later, see `LICENSE`. `mono.css` is generated from Valve's style sheets and carries their rule names; it is here so the theme works without a build step. Iosevka by Belleve Invis (SIL Open Font License 1.1) is loaded from jsDelivr, not included.
+GPL-3.0-or-later, see `LICENSE`. Iosevka by Belleve Invis (SIL Open Font License 1.1) is loaded from jsDelivr, not included.
