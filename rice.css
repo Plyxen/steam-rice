@@ -402,7 +402,7 @@ body .DialogButton.Primary:hover:not(:disabled) {
 }
 
 /* Play, Install, Update: one light button with dark text. Running and queued states keep Steam's (muted) colour */
-.DesktopUI .PlayButtonContainer:is(.Green, .Blue) :is(.PlayButton, .MenuButton) {
+.DesktopUI .PlayButtonContainer:is(.Green, .Blue) :is(.PlayButton, .MenuButton, .StreamingSelector) {
     background: var(--button) !important;
     color: var(--ink) !important;
     box-shadow: none !important;
@@ -415,8 +415,24 @@ body .DialogButton.Primary:hover:not(:disabled) {
     color: var(--ink) !important;
     text-shadow: none !important;
 }
-.DesktopUI .PlayButtonContainer:is(.Green, .Blue) .SVGIcon_Button {
+.DesktopUI .PlayButtonContainer:is(.Green, .Blue) .SVGIcon_Button,
+.DesktopUI .PlayButtonContainer:is(.Green, .Blue) .StreamingSelector polygon {
     fill: var(--ink) !important;
+}
+
+/* Icons that carry their colours inside the drawing itself (the achievements ribbon, the completion
+   medal), where no style sheet reaches: greyed as a whole */
+.DesktopUI .AchievementSVG,
+.DesktopUI .CompletionAward {
+    filter: grayscale(1);
+}
+
+/* the HowLongToBeat plugin's box on a game's page, if you have that plugin */
+.DesktopUI #hltb-for-millennium .hltb-info {
+    background: hsla(0, 0%, 0%, 0.45) !important;
+}
+.DesktopUI #hltb-for-millennium .hltb-details-btn {
+    color: var(--fg-dim) !important;
 }
 
 /* ---------------------------------------------------------------- pictures
@@ -426,12 +442,13 @@ body .DialogButton.Primary:hover:not(:disabled) {
 @container style(--pictures: quiet) or style(--pictures: grey) {
     .DesktopUI .MainPanel img,
     .DesktopUI .LeftListSizableContainer img {
-        filter: grayscale(1) brightness(0.7);
+        /* !important: Steam sets filters of its own on a few pictures, such as trading cards */
+        filter: grayscale(1) brightness(0.7) !important;
         transition: filter 0.15s;
     }
     /* a game's logo is its title here, so it stays at full brightness */
     .DesktopUI .MainPanel img.TitleLogo {
-        filter: grayscale(1);
+        filter: grayscale(1) !important;
     }
 
     /* a game's page: the banner and the blurred copies of it behind the page are not drawn, so the
@@ -444,7 +461,7 @@ body .DialogButton.Primary:hover:not(:disabled) {
     .DesktopUI .MainPanel img:hover,
     .DesktopUI .MainPanel :is(a, .LibraryItemBox):hover img,
     .DesktopUI .LeftListSizableContainer :is(.Installed, .Uninstalled):hover img {
-        filter: none;
+        filter: none !important;
     }
 }
 
