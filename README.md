@@ -2,11 +2,11 @@
 
 Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https://steambrew.app). The sibling of [discord-rice](https://github.com/Plyxen/discord-rice), with the same wallpaper, font and greys.
 
-![steam-rice: the library on a misty wallpaper, with black-and-white covers and the one under the mouse in colour](assets/library.png)
+![steam-rice: the library on a misty wallpaper, with black-and-white covers and the one under the mouse in colour](assets/library.webp)
 
-![a game's page: its logo on the wallpaper instead of a banner](assets/game.png)
+![a game's page: its logo on the wallpaper instead of a banner](assets/game.webp)
 
-![Big Picture mode: the same greys, font and quiet pictures](assets/bigpicture.png)
+![Big Picture mode: the same greys, font and quiet pictures](assets/bigpicture.webp)
 
 ## What it does
 
@@ -22,9 +22,9 @@ Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https:/
 
 ## Light
 
-About 60 KB in five files, and it adds 123 style rules to Steam's twenty thousand.
+What Steam loads is about 60 KB in five files, and it adds 123 style rules to Steam's twenty thousand. The whole download, screenshots included, is about 360 KB.
 
-Steam has almost no colour variables. Its look is some eleven thousand literal colours in its own style sheets, so themes usually override them rule by rule, which gets large and breaks when Valve renames things. This theme doesn't add colour rules at all. `mono.js` reads Steam's style sheets once at start (about 40 ms), rewrites the colours in the text, and gives every window the rewritten sheet in place of the original. Steam runs with the same number of rules as with no theme, and a Steam update needs nothing from you.
+Steam has almost no colour variables. Its look is some eleven thousand literal colours in its own style sheets, so themes usually override them rule by rule, which gets large and breaks when Valve renames things. This theme doesn't add colour rules at all. `mono.js` reads Steam's style sheets once when Steam starts (about 0.15 s), rewrites the colours in the text, and gives every window the rewritten sheet in place of the original. Steam runs with the same number of rules as with no theme, and a Steam update needs nothing from you.
 
 `rice.css` is the rest: wallpaper, lines and the options. It names Steam's parts by the readable class names Millennium adds (`TopBar`, `SuperNav`, `BottomBar`), not by Valve's generated ones, so it survives updates too.
 

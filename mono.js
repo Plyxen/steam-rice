@@ -152,6 +152,18 @@
         return made.get(href);
     }
 
+    // Switch Steam's sheet off once it has loaded too. The grey copy can be ready before a big
+    // sheet like sp.css has finished loading, and a sheet switched off mid-load comes back on in
+    // Chromium, which left every window running both.
+    function retire(link) {
+        const off = () => {
+            link.disabled = true;
+            if (link.sheet) link.sheet.disabled = true;
+        };
+        if (link.sheet) off();
+        else link.addEventListener('load', off, { once: true });
+    }
+
     function take(link) {
         if (link.dataset.rice || !link.href.startsWith(steamCss)) return;
         link.dataset.rice = 'stock';
@@ -162,7 +174,7 @@
                 mono.dataset.rice = 'mono';
                 mono.href = url;
                 // Steam's own sheet stays until the grey one has loaded, so a window is never unstyled
-                mono.onload = () => (link.disabled = true);
+                mono.onload = () => retire(link);
                 link.after(mono);
             })
             .catch(() => made.delete(link.href)); // leave Steam's sheet alone, try again in the next window
