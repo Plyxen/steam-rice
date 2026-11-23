@@ -59,7 +59,8 @@
     --active: hsla(0, 0%, 100%, 0.1);
     --pressed: hsla(0, 0%, 100%, 0.14);
 
-    --popup: hsl(0, 0%, 11%); /* menus: their windows have no wallpaper behind them */
+    --popup: hsl(0, 0%, 11%); /* solid dark, for things with nothing to see through to */
+    --menu-tint: hsla(0, 0%, 7%, 0.8); /* menus: what is under them shows through a little */
 
     --line: hsla(0, 0%, 100%, 0.12); /* splits the panes */
     --edge: hsla(0, 0%, 100%, 0.08);
@@ -478,6 +479,12 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
         filter: grayscale(1) brightness(0.7) !important;
         transition: filter 0.15s;
     }
+    /* The one place a person's picture goes quiet too: the friends shown on the corner of a cover.
+       They are part of the cover there, and a spot of colour on a grey wall of covers stands out */
+    .DesktopUI .MainPanel .Draggable > .FriendsBar img.avatar {
+        filter: grayscale(1) brightness(0.7) !important;
+        transition: filter 0.15s;
+    }
     /* a game's logo is its title, on its page and at the top of the in-game overlay: full brightness */
     .DesktopUI .MainPanel img.TitleLogo,
     .DesktopUI .ShowGameLogo img {
@@ -493,6 +500,7 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
 @container style(--pictures: quiet) {
     .DesktopUI .MainPanel img:hover,
     .DesktopUI .MainPanel :is(a, .LibraryItemBox):hover img,
+    .DesktopUI .MainPanel .Draggable:hover > .FriendsBar img.avatar,
     .DesktopUI .LeftListSizableContainer :is(.Installed, .Uninstalled):hover img,
     .DesktopUI .OverlayPopup img:hover,
     .friendsui-container .friend:hover .FriendInGameIcon img {
@@ -655,11 +663,16 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
 }
 
 /* ================================================================
-   menus. Each one is its own little window, so there is no wallpaper to see through: solid, with an edge
+   menus. Each one is its own little window with nothing of its own behind it, so a see-through tint shows
+   what the menu is lying on. A window can't blur what is behind it, so the tint is kept dark enough to read
+   on. --menu-tint: var(--popup) gives solid menus
    ================================================================ */
-.ContextMenuPopupBody .contextMenu,
+.ContextMenuPopupBody .contextMenu {
+    background: none !important;
+    box-shadow: none !important;
+}
 .ContextMenuPopupBody .contextMenuContents {
-    background: var(--popup) !important;
+    background: var(--menu-tint) !important;
     box-shadow: none !important;
 }
 .ContextMenuPopupBody .contextMenuContents {
