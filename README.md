@@ -32,13 +32,18 @@ Steam has almost no colour variables. Its look is some eleven thousand literal c
 
 You need [Millennium](https://steambrew.app), with JavaScript allowed for themes (it asks when you pick the theme; the grey is the script).
 
-Download this repo (**Code → Download ZIP**), unzip it, and put the folder into Millennium's themes folder as `steam-rice`. The themes folder is `millennium/themes` inside your Steam folder.
+It's in [Millennium's theme store](https://steambrew.app/theme/GNmVVC7pVltSHEouubpl). In Steam: **Steam menu → Millennium → Themes → Install a theme**, and enter this ID:
 
-Then in Steam: **Steam menu → Millennium → Themes → steam-rice**.
+```
+GNmVVC7pVltSHEouubpl
+```
 
-### Updates
+Then pick **steam-rice** in the same list. New versions show up under **Millennium → Updates**, with an Update button.
 
-Download it again and replace the folder. Once the theme is in Millennium's store, Millennium installs it and keeps it up to date for you.
+### By hand
+
+Download this repo (**Code → Download ZIP**), unzip it, and put the folder into Millennium's themes folder as `steam-rice`. The themes folder is `millennium/themes` inside your Steam folder. Then pick it under **Steam menu → Millennium → Themes**. To update, download it again and replace the folder.
+
 ## Options
 
 In Millennium, open the theme's settings (the cog next to it).
