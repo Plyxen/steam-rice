@@ -76,11 +76,14 @@
         return out;
     }
 
-    const colour = /#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\(\s*[^()]*\)/g;
+    // url(...) is matched first so that it is passed over whole: "#abc" in there names a part of a
+    // picture, it is not a colour
+    const colour = /\burl\([^)]*\)|#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\(\s*[^()]*\)/g;
     const hex2 = v => v.toString(16).padStart(2, '0');
 
     function recolour(value, role) {
         return value.replace(colour, tok => {
+            if (tok.startsWith('url(')) return tok;
             if (tok[0] === '#') {
                 let h = tok.slice(1);
                 if (h.length === 3 || h.length === 4) h = h.replace(/./g, '$&$&');
@@ -164,6 +167,8 @@
         else link.addEventListener('load', off, { once: true });
     }
 
+    const copies = new Map(); // Steam's sheet -> its grey copy, in this window
+
     function take(link) {
         if (link.dataset.rice || !link.href.startsWith(steamCss)) return;
         link.dataset.rice = 'stock';
@@ -176,11 +181,20 @@
                 // Steam's own sheet stays until the grey one has loaded, so a window is never unstyled
                 mono.onload = () => retire(link);
                 link.after(mono);
+                copies.set(link, mono);
             })
             .catch(() => made.delete(link.href)); // leave Steam's sheet alone, try again in the next window
     }
 
-    const scan = () => document.querySelectorAll('link[rel=stylesheet]').forEach(take);
+    function scan() {
+        document.querySelectorAll('link[rel=stylesheet]').forEach(take);
+        // a sheet Steam has taken away again must not leave its grey copy styling the window
+        for (const [link, mono] of copies) {
+            if (link.isConnected) continue;
+            mono.remove();
+            copies.delete(link);
+        }
+    }
     scan();
     // Steam adds a sheet now and then, for a page it loads late
     new MutationObserver(scan).observe(document.head, { childList: true });

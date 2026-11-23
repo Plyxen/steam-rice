@@ -178,12 +178,17 @@ body .DialogButton.Primary:hover:not(:disabled) {
 /* ================================================================
    the main window: wallpaper behind everything, panes see-through, thin lines between them
    ================================================================ */
-.MillenniumWindow_MainSteamWindow .Wrapper.ForceOpaqueBackground {
+/* the wallpaper: behind the main window, the friends list and chats, and Big Picture mode */
+.MillenniumWindow_MainSteamWindow .Wrapper.ForceOpaqueBackground,
+html.friendsui-container body:not(.ContextMenuPopupBody),
+.GamepadMode.BasicUiRoot {
     background-color: black !important;
     background-image: var(--grain-layer), var(--wallpaper-shade), var(--wallpaper) !important;
     /* grain repeats at its own size, the four shades fill the window, the picture covers it */
     background-size: auto, auto, auto, auto, auto, cover !important;
     background-position: center !important;
+}
+.MillenniumWindow_MainSteamWindow .Wrapper.ForceOpaqueBackground {
     border: none !important;
 }
 
@@ -442,6 +447,15 @@ body .DialogButton.Primary:hover:not(:disabled) {
     filter: grayscale(1);
 }
 
+/* Millennium's own settings pages and side panel carry two of Steam's blue-greys in style blocks of
+   their own, which mono.js doesn't read */
+.MillenniumSettings {
+    border-color: var(--edge-strong) !important;
+}
+.MillenniumDesktopSidebar {
+    --sidebar-bg: var(--popup) !important;
+}
+
 /* the HowLongToBeat plugin's box on a game's page, if you have that plugin */
 .DesktopUI #hltb-for-millennium .hltb-info {
     background: hsla(0, 0%, 0%, 0.45) !important;
@@ -527,13 +541,6 @@ body .DialogButton.Primary:hover:not(:disabled) {
 /* ================================================================
    friends list and chat: the same wallpaper as the main window, the parts see-through, lines between them
    ================================================================ */
-html.friendsui-container body:not(.ContextMenuPopupBody) {
-    background-color: black !important;
-    background-image: var(--grain-layer), var(--wallpaper-shade), var(--wallpaper) !important;
-    background-size: auto, auto, auto, auto, auto, cover !important;
-    background-position: center !important;
-}
-
 /* the friends list: your own header, the tab row, the list, the group chats title, the footer */
 .friendsui-container .friendListHeaderContainer,
 .friendsui-container .friendlistListContainer,
@@ -622,12 +629,6 @@ html.friendsui-container body:not(.ContextMenuPopupBody) {
    Big Picture mode. mono.js already makes it grey and sets the font. This adds the wallpaper in place of
    the black behind everything, and the quiet pictures
    ================================================================ */
-.GamepadMode.BasicUiRoot {
-    background-color: black !important;
-    background-image: var(--grain-layer), var(--wallpaper-shade), var(--wallpaper) !important;
-    background-size: auto, auto, auto, auto, auto, cover !important;
-    background-position: center !important;
-}
 .GamepadMode .BasicHome.OpaqueBackground {
     background: none !important;
 }
