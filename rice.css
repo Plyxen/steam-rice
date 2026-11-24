@@ -23,6 +23,8 @@
     --wallpaper: url('wallpaper.jpg');
     --wallpaper-dim: 0.5; /* 0 = raw wallpaper, 1 = black. Raise it if text is hard to read */
     --grain: on; /* off | on: film grain over the wallpaper */
+    --logo: arch; /* arch | steam: the logo on the Steam menu button */
+    --pane-borders: on; /* off | on: a thin border around every pane, as a tiling WM draws them. off = plain lines between panes */
 
     --lowercase-tabs: on; /* off | on: store library community instead of STORE LIBRARY COMMUNITY */
     --tab-spacing: 0.144em; /* widens the tabs' letters. Tuned so each tab starts where Steam's own does */
@@ -36,7 +38,7 @@
     /* ---- declutter (on = hidden) ---- */
     --hide-title-buttons: on; /* the megaphone and Big Picture buttons in the top bar (View > Big Picture Mode still works) */
     --hide-whats-new: on; /* the news strip at the top of the library home */
-    --hide-add-shelf: on; /* the "Add shelf" row on the library home */
+    --hide-add-shelf: off; /* off | on: on hides the "Add shelf" row under the shelves, as long as one shelf is left */
     --hide-add-game: off; /* "Add a Game" in the bottom bar (Games > Add a Non-Steam Game still works) */
 
     /* ---- look ---- */
@@ -65,6 +67,7 @@
     --line: hsla(0, 0%, 100%, 0.12); /* splits the panes */
     --edge: hsla(0, 0%, 100%, 0.08);
     --edge-strong: hsla(0, 0%, 100%, 0.14);
+    --pane-edge: hsla(0, 0%, 100%, 0.13); /* the border of a pane */
 
     --button: hsl(0, 0%, 88%);
     --button-hover: hsl(0, 0%, 80%);
@@ -82,6 +85,9 @@
         linear-gradient(90deg, hsla(0, 0%, 0%, 0.5) 0%, hsla(0, 0%, 0%, 0.3) 30%, transparent 50%),
         linear-gradient(hsla(0, 0%, 0%, var(--wallpaper-dim)), hsla(0, 0%, 0%, var(--wallpaper-dim)));
     --grain-layer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='900'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 .07'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+    /* the Arch Linux logo's outline, from Simple Icons (CC0) */
+    --arch-logo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11.39.605C10.376 3.092 9.764 4.72 8.635 7.132c.693.734 1.543 1.589 2.923 2.554-1.484-.61-2.496-1.224-3.252-1.86C6.86 10.842 4.596 15.138 0 23.395c3.612-2.085 6.412-3.37 9.021-3.862a6.61 6.61 0 01-.171-1.547l.003-.115c.058-2.315 1.261-4.095 2.687-3.973 1.426.12 2.534 2.096 2.478 4.409a6.52 6.52 0 01-.146 1.243c2.58.505 5.352 1.787 8.914 3.844-.702-1.293-1.33-2.459-1.929-3.57-.943-.73-1.926-1.682-3.933-2.713 1.38.359 2.367.772 3.137 1.234-6.09-11.334-6.582-12.84-8.67-17.74z'/%3E%3C/svg%3E");
 
     /* mono.js points every font Steam names at --rice-font. These are Steam's own names for font and corners */
     --rice-font: var(--font), 'Motiva Sans', Twemoji, 'Noto Sans', Helvetica, sans-serif;
@@ -220,9 +226,33 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
 .DesktopUI .RootMenuBar .RootMenuButton {
     color: var(--fg-dim);
     letter-spacing: 0.05em; /* same idea as the tabs below: keeps Help where Steam has it */
+    text-transform: lowercase;
 }
 .DesktopUI .RootMenuBar .RootMenuButton:hover {
     color: var(--fg-bright);
+}
+/* While one of these menus is open it lies over the tab row, and its edge would cut through a
+   large bright letter. The tabs step back until it closes */
+.DesktopUI .SuperNav {
+    transition: opacity 0.1s;
+}
+.DesktopUI .TopBar:has(.RootMenuButton.MenuOpen) .SuperNav {
+    opacity: 0.22;
+}
+.DesktopUI .RootMenuBar .RootMenuButton.MenuOpen {
+    color: var(--fg-bright);
+}
+/* the Steam button wears the Arch logo, as the launcher on an Arch rice's bar does. Same box, same
+   size; Steam's own drawing is hidden and the logo is cut out of a block of the text's colour */
+@container style(--logo: arch) {
+    .DesktopUI .RootMenuBar .SteamButton svg {
+        background: currentColor;
+        -webkit-mask: var(--arch-logo) center / 15px no-repeat;
+        mask: var(--arch-logo) center / 15px no-repeat;
+    }
+    .DesktopUI .RootMenuBar .SteamButton svg > * {
+        visibility: hidden;
+    }
 }
 
 /* The tabs. Iosevka is narrower than Steam's font, so the letters are spaced out until a tab is as wide
@@ -241,11 +271,50 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
         text-transform: lowercase !important;
     }
 }
-/* the open tab: Steam's thick underline becomes a 1px one */
+/* The tab row reads as a line in a terminal: the open tab stands in [brackets], and a cursor blinks
+   after the last word. The brackets are drawn in the space each tab already has on both sides, and
+   the cursor after the last tab, so no tab moves. Steam's underline goes */
+.DesktopUI .SuperNav .Selected .MenuButton {
+    position: relative;
+}
+.DesktopUI .SuperNav .Selected .MenuButton::before,
 .DesktopUI .SuperNav .Selected .MenuButton::after {
-    height: 1px;
-    border-radius: 0;
-    background: var(--fg-bright);
+    position: absolute;
+    top: 0;
+    width: auto;
+    height: auto;
+    background: none;
+    letter-spacing: 0;
+    font-weight: 400;
+    color: var(--fg-dim);
+}
+.DesktopUI .SuperNav .Selected .MenuButton::before {
+    content: '[';
+    left: -10px;
+}
+.DesktopUI .SuperNav .Selected .MenuButton::after {
+    content: ']';
+    left: auto;
+    right: -9px;
+}
+.DesktopUI .SuperNav::after {
+    content: '';
+    align-self: flex-start;
+    width: 9px;
+    height: 18px;
+    margin: 2px 0 0 6px;
+    background: var(--fg-dim);
+    animation: rice-cursor 1.1s steps(1) infinite;
+}
+@keyframes rice-cursor {
+    50% {
+        opacity: 0;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .DesktopUI .SuperNav::after {
+        animation: none;
+    }
 }
 
 /* bell and account: flat glass instead of filled boxes */
@@ -361,6 +430,62 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
 .DesktopUI .LeftListSizableContainer .Uninstalled .GameListEntryContainer {
     color: var(--fg-faint);
 }
+/* the open game has a > in front, like the cursor in a terminal file manager. It stands in the
+   slot Steam keeps left of each icon for a status mark, when that slot is empty */
+.DesktopUI .LeftListSizableContainer .Selected .StatusIcon:empty::before {
+    content: '>';
+    display: block;
+    width: 16px;
+    line-height: 16px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--fg-bright);
+}
+/* The library home: each shelf is a panel as a terminal program draws one, a thin box with the
+   shelf's name set into its top line. Steam's own rule beside the name is that top line; the box
+   is drawn over the shelf, so no cover moves */
+.DesktopUI .MainPanel .Showcase {
+    position: relative;
+}
+.DesktopUI .MainPanel .Showcase::before {
+    content: '';
+    position: absolute;
+    /* measured from inside the shelf's own 1px border. 16px clear of the covers at the sides, 20px under them */
+    inset: 18px -6px -6px -6px;
+    border: 1px solid var(--pane-edge);
+    border-top: none;
+    pointer-events: none;
+}
+.DesktopUI .MainPanel .ShowcaseHeader > .Rule {
+    align-self: flex-start;
+    height: 1px;
+    margin-top: 11px;
+    background: var(--pane-edge) !important;
+}
+/* the two short ends of the top line, left of the name and at the far right */
+.DesktopUI .MainPanel .ShowcaseHeader::before,
+.DesktopUI .MainPanel .ShowcaseHeader::after {
+    content: '';
+    position: absolute;
+    top: 11px; /* the header has a 1px border of its own above this */
+    width: 13px;
+    height: 1px;
+    background: var(--pane-edge);
+}
+.DesktopUI .MainPanel .ShowcaseHeader::before {
+    left: -7px;
+}
+.DesktopUI .MainPanel .ShowcaseHeader::after {
+    right: -7px;
+    width: 7px; /* Steam's rule ends where this begins */
+}
+.DesktopUI .MainPanel .ShowcaseHeader :is(.CollectionDropDown, .SortingDropDownLabel) {
+    text-transform: lowercase;
+}
+/* covers: a thin edge in place of the soft shadow */
+.DesktopUI .MainPanel .LibraryItemBox {
+    box-shadow: 0 0 0 1px var(--pane-edge) !important;
+}
 
 /* ---------------------------------------------------------------- library: the right side */
 /* the line between the list and the page. Drawn by the page, just outside its left edge, so it stays
@@ -391,8 +516,21 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
         display: none !important;
     }
 }
+/* Steam has the "Add shelf" row above the shelves. It goes under them, so the first shelf starts at
+   the top of the page */
+.DesktopUI .MainPanel :has(> .AddShowcaseRow) {
+    display: flex !important;
+    flex-direction: column;
+}
+.DesktopUI .MainPanel .AddShowcaseRow {
+    order: 2;
+    flex: none;
+    margin-top: 18px; /* clear of the last shelf's box, which ends 6px under the shelf */
+    text-transform: lowercase;
+}
 @container style(--hide-add-shelf: on) {
-    .DesktopUI .MainPanel .AddShowcaseRow {
+    /* only while there is a shelf: with none left, this row is the one way to get them back */
+    .DesktopUI .MainPanel .LibraryHome:has(.Showcase) .AddShowcaseRow {
         display: none !important;
     }
 }
@@ -546,6 +684,55 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
     border-top: 1px solid var(--line);
 }
 
+/* ---------------------------------------------------------------- panes
+   The main window as a tiling WM lays it out: the top bar, the game list, the page and the bottom bar
+   are panes that touch, each with its own thin border.
+   The borders are drawn over the panes, so nothing in them moves */
+@container style(--pane-borders: on) {
+    /* the lines that split the panes make way for the borders */
+    .DesktopUI .URLBarReplacement,
+    .DesktopUI .URLBar,
+    .DesktopUI .MainPanel {
+        box-shadow: none !important;
+    }
+    .DesktopUI .BottomBar {
+        border-top-color: transparent;
+    }
+    .DesktopUI .LibraryWindowDivider {
+        background: none !important;
+    }
+
+    .DesktopUI .TopBar,
+    .DesktopUI .BottomBar,
+    .DesktopUI .BrowserWrapper {
+        position: relative;
+    }
+    .DesktopUI :is(.TopBar, .LeftListSizableContainer, .MainPanel, .BottomBar, .BrowserWrapper)::after {
+        content: '';
+        position: absolute;
+        inset: var(--pane-t, 0px) var(--pane-r, 0px) 0 var(--pane-l, 0px);
+        z-index: 20;
+        pointer-events: none;
+        border: 1px solid var(--pane-edge);
+    }
+    /* the list and the page reach up over the 12px strip under the tabs, and meet over the 2px bar
+       between them that drags the list wider */
+    .DesktopUI .LeftListSizableContainer {
+        --pane-t: -12px;
+        --pane-r: -1px;
+    }
+    .DesktopUI .MainPanel {
+        --pane-t: -12px;
+        --pane-l: -1px;
+    }
+    /* a web page is drawn over the window, so it is made 1px smaller on three sides to let its
+       pane's border show */
+    .DesktopUI .BrowserWrapper .Browser {
+        width: calc(100% - 2px);
+        margin: 0 1px 1px;
+    }
+}
+
 /* ================================================================
    friends list and chat: the same wallpaper as the main window, the parts see-through, lines between them
    ================================================================ */
@@ -674,6 +861,11 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
 .ContextMenuPopupBody .contextMenuContents {
     background: var(--menu-tint) !important;
     box-shadow: none !important;
+}
+/* The five menus of the top bar (steam, view, friends, games, help) open on top of the tab row. Its
+   large bright letters would show through, cut by the menu's edge, so these menus are solid */
+html[class*='_Root_Menu'] .ContextMenuPopupBody .contextMenuContents {
+    background: var(--popup) !important;
 }
 .ContextMenuPopupBody .contextMenuContents {
     border: 1px solid var(--edge-strong) !important;

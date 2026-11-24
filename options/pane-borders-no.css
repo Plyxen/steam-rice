@@ -1,0 +1,4 @@
+/* steam-rice option "Pane borders": no */
+:root {
+    --pane-borders: off !important;
+}
