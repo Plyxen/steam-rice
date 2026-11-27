@@ -2,7 +2,7 @@
     "name": "steam-rice",
     "author": "Pota",
     "description": "Linux-rice look for Steam: misty wallpaper behind the library, panes split by thin lines, Iosevka, quiet black-and-white pictures. Nothing in the top bar is moved. Greyscale without extra rules: a small script recolours Steam's own style sheets.",
-    "version": "1.3.8",
+    "version": "1.3.9",
     "tags": [
         "Dark",
         "Minimal",
@@ -219,7 +219,7 @@
             }
         },
         "Logo": {
-            "description": "The logo on the Steam menu button, top left. Arch is the Arch Linux logo, as on an Arch rice's bar.",
+            "description": "The logo on the Steam menu button, top left: your distro's, as on a rice's bar, or Steam's own.",
             "default": "Arch",
             "tab": "Top bar",
             "values": {
@@ -229,6 +229,158 @@
                             ".*"
                         ],
                         "src": "options/logo-arch.css"
+                    }
+                },
+                "CachyOS": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-cachyos.css"
+                    }
+                },
+                "EndeavourOS": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-endeavouros.css"
+                    }
+                },
+                "Manjaro": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-manjaro.css"
+                    }
+                },
+                "Artix": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-artix.css"
+                    }
+                },
+                "Garuda": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-garuda.css"
+                    }
+                },
+                "Debian": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-debian.css"
+                    }
+                },
+                "Ubuntu": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-ubuntu.css"
+                    }
+                },
+                "Mint": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-mint.css"
+                    }
+                },
+                "Pop!_OS": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-popos.css"
+                    }
+                },
+                "Zorin": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-zorin.css"
+                    }
+                },
+                "Kali": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-kali.css"
+                    }
+                },
+                "Fedora": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-fedora.css"
+                    }
+                },
+                "Nobara": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-nobara.css"
+                    }
+                },
+                "openSUSE": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-opensuse.css"
+                    }
+                },
+                "NixOS": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-nixos.css"
+                    }
+                },
+                "Gentoo": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-gentoo.css"
+                    }
+                },
+                "Void": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-void.css"
+                    }
+                },
+                "Alpine": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-alpine.css"
+                    }
+                },
+                "Tux": {
+                    "TargetCss": {
+                        "affects": [
+                            ".*"
+                        ],
+                        "src": "options/logo-tux.css"
                     }
                 },
                 "Steam": {

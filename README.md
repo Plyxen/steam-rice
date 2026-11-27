@@ -11,7 +11,7 @@ Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https:/
 ## What it does
 
 - **Tiled.** One misty wallpaper behind the library. The top bar, the game list, the page and the bottom bar are panes that touch, each with a thin border, as a tiling WM draws them. No gaps, gradients or shadows.
-- **Terminal touches.** The open tab stands in `[brackets]` with a cursor blinking after the tabs, the open game has a `>` in front, and each shelf on the library home is a thin box with its name set into the top line. The Steam menu button wears the Arch logo (an option).
+- **Terminal touches.** The open tab stands in `[brackets]` with a cursor blinking after the tabs, the open game has a `>` in front, and each shelf on the library home is a thin box with its name set into the top line. The Steam menu button wears your distro's logo: Arch by default, with nineteen others and Steam's own to pick from.
 - **Greyscale.** Steam's blue-grey is gone everywhere: library, settings, menus, downloads, friends. Only things that mean something (playing, online, danger) keep a colour, muted.
 - **Quiet pictures.** Steam's library is a wall of cover art. Here covers are black-and-white and a little darker, and show their colours while the mouse is on them. People's avatars and their frames are left in colour. A game's page shows its logo on the wallpaper instead of a banner. The "What's New" strip is hidden.
 - **Nothing moves.** Menus, tabs, the bell, your name, the window buttons and Play are where Steam has them, so your hand still finds them. The tabs and menus are lowercase, and the tabs are spaced out to the width of Steam's own. "Add shelf" sits under the shelves instead of above them. The window buttons are full size with a dot drawn in them, so the corner still closes the window.
@@ -58,7 +58,7 @@ In Millennium, open the theme's settings (the cog next to it).
 | Film grain | on, off | |
 | Pictures | Quiet, Grey, Steam | Grey is Quiet without the colour under the mouse. Steam is the stock look. |
 | Store and community pages | Muted, Greyscale, Steam | |
-| Logo | Arch, Steam | The logo on the Steam menu button. |
+| Logo | Arch, CachyOS, EndeavourOS, Manjaro, Artix, Garuda, Debian, Ubuntu, Mint, Pop!_OS, Zorin, Kali, Fedora, Nobara, openSUSE, NixOS, Gentoo, Void, Alpine, Tux, Steam | The logo on the Steam menu button. |
 | Lowercase tabs | on, off | |
 | Dots in the window buttons | on, off | |
 | Hide megaphone and Big Picture buttons | on, off | |
@@ -70,4 +70,4 @@ Smaller covers are Steam's own setting: **Settings → Library → Library user 
 
 ## Licence
 
-GPL-3.0-or-later, see `LICENSE`. Iosevka by Belleve Invis (SIL Open Font License 1.1) is loaded from jsDelivr, not included. The Arch Linux logo's outline is from Simple Icons (CC0); the logo itself is a trademark of the Arch Linux project, and this theme is not affiliated with it.
+GPL-3.0-or-later, see `LICENSE`. Iosevka by Belleve Invis (SIL Open Font License 1.1) is loaded from jsDelivr, not included. The distro logos' outlines are from Simple Icons (CC0). The logos themselves are trademarks of their projects, and this theme is not affiliated with any of them.

@@ -23,7 +23,7 @@
     --wallpaper: url('wallpaper.jpg');
     --wallpaper-dim: 0.5; /* 0 = raw wallpaper, 1 = black. Raise it if text is hard to read */
     --grain: on; /* off | on: film grain over the wallpaper */
-    --logo: arch; /* arch | steam: the logo on the Steam menu button */
+    --logo: distro; /* distro | steam: a Linux distro's logo on the Steam menu button (Arch, unless the Logo option picks another), or Steam's own */
     --pane-borders: on; /* off | on: a thin border around every pane, as a tiling WM draws them. off = plain lines between panes */
 
     --lowercase-tabs: on; /* off | on: store library community instead of STORE LIBRARY COMMUNITY */
@@ -86,8 +86,8 @@
         linear-gradient(hsla(0, 0%, 0%, var(--wallpaper-dim)), hsla(0, 0%, 0%, var(--wallpaper-dim)));
     --grain-layer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='900'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 .07'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
-    /* the Arch Linux logo's outline, from Simple Icons (CC0) */
-    --arch-logo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11.39.605C10.376 3.092 9.764 4.72 8.635 7.132c.693.734 1.543 1.589 2.923 2.554-1.484-.61-2.496-1.224-3.252-1.86C6.86 10.842 4.596 15.138 0 23.395c3.612-2.085 6.412-3.37 9.021-3.862a6.61 6.61 0 01-.171-1.547l.003-.115c.058-2.315 1.261-4.095 2.687-3.973 1.426.12 2.534 2.096 2.478 4.409a6.52 6.52 0 01-.146 1.243c2.58.505 5.352 1.787 8.914 3.844-.702-1.293-1.33-2.459-1.929-3.57-.943-.73-1.926-1.682-3.933-2.713 1.38.359 2.367.772 3.137 1.234-6.09-11.334-6.582-12.84-8.67-17.74z'/%3E%3C/svg%3E");
+    /* the logo's outline. Arch Linux here; the Logo option swaps in another distro's. All from Simple Icons (CC0) */
+    --logo-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11.39.605C10.376 3.092 9.764 4.72 8.635 7.132c.693.734 1.543 1.589 2.923 2.554-1.484-.61-2.496-1.224-3.252-1.86C6.86 10.842 4.596 15.138 0 23.395c3.612-2.085 6.412-3.37 9.021-3.862a6.61 6.61 0 01-.171-1.547l.003-.115c.058-2.315 1.261-4.095 2.687-3.973 1.426.12 2.534 2.096 2.478 4.409a6.52 6.52 0 01-.146 1.243c2.58.505 5.352 1.787 8.914 3.844-.702-1.293-1.33-2.459-1.929-3.57-.943-.73-1.926-1.682-3.933-2.713 1.38.359 2.367.772 3.137 1.234-6.09-11.334-6.582-12.84-8.67-17.74z'/%3E%3C/svg%3E");
 
     /* mono.js points every font Steam names at --rice-font. These are Steam's own names for font and corners */
     --rice-font: var(--font), 'Motiva Sans', Twemoji, 'Noto Sans', Helvetica, sans-serif;
@@ -242,13 +242,13 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
 .DesktopUI .RootMenuBar .RootMenuButton.MenuOpen {
     color: var(--fg-bright);
 }
-/* the Steam button wears the Arch logo, as the launcher on an Arch rice's bar does. Same box, same
+/* the Steam button wears a distro's logo, as the launcher on a rice's bar does. Same box, same
    size; Steam's own drawing is hidden and the logo is cut out of a block of the text's colour */
-@container style(--logo: arch) {
+@container style(--logo: distro) {
     .DesktopUI .RootMenuBar .SteamButton svg {
         background: currentColor;
-        -webkit-mask: var(--arch-logo) center / 15px no-repeat;
-        mask: var(--arch-logo) center / 15px no-repeat;
+        -webkit-mask: var(--logo-shape) center / 15px no-repeat;
+        mask: var(--logo-shape) center / 15px no-repeat;
     }
     .DesktopUI .RootMenuBar .SteamButton svg > * {
         visibility: hidden;
