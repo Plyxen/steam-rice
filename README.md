@@ -23,11 +23,11 @@ Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https:/
 
 ## Light
 
-What Steam loads is about 70 KB in five files, and it adds 144 style rules to Steam's twenty thousand. The whole download, screenshots included, is about 400 KB.
+What Steam loads is about 100 KB in six files, and it adds 144 style rules to Steam's twenty thousand. The whole download, screenshots included, is about 500 KB.
 
 Steam has almost no colour variables. Its look is some eleven thousand literal colours in its own style sheets, so themes usually override them rule by rule, which gets large and breaks when Valve renames things. This theme doesn't add colour rules at all. `mono.js` reads Steam's style sheets once when Steam starts (about 0.15 s), rewrites the colours in the text, and gives every window the rewritten sheet in place of the original. Steam runs with the same number of rules as with no theme, and a Steam update needs nothing from you.
 
-`rice.css` is the rest: wallpaper, pane borders, the terminal touches and the options. It names Steam's parts by the readable class names Millennium adds (`TopBar`, `SuperNav`, `BottomBar`), not by Valve's generated ones, so it survives updates too.
+`rice.css` is the rest: wallpaper, pane borders, the terminal touches and the options. `settings.js` is the settings window; its own styles are only added to the main window, when the top bar is there. It names Steam's parts by the readable class names Millennium adds (`TopBar`, `SuperNav`, `BottomBar`), not by Valve's generated ones, so it survives updates too.
 
 ## Install
 
@@ -47,7 +47,16 @@ Download this repo (**Code → Download ZIP**), unzip it, and put the folder int
 
 ## Options
 
-In Millennium, open the theme's settings (the cog next to it).
+The easy way is inside Steam: the **rice bowl button** in the top bar, left of the bell, opens the steam-rice window, a small terminal-style settings tool with every option below. Changes show straight away, in every Steam window.
+
+![The steam-rice window on its look tab: a tab list on the left, block sliders for corners and wallpaper dim, choices as chips and [x] switches](assets/settings.webp)
+
+- Keys: `1`-`4` pick a tab, `Tab` moves, `Space` toggles, `←` `→` move a slider, `Esc` closes.
+- What you pick there is laid over the theme settings in Millennium, not written into them. **reset defaults** (click it twice) forgets it all and hands the theme back to Millennium.
+- Two things are only in the window: sliders for corners and wallpaper dim that go finer than Millennium's three steps, and a field for a link to your own wallpaper.
+- Store and community pages are web pages of their own, which the window can't reach. That one option is set in Millennium.
+
+The same options are in Millennium: open the theme's settings (the cog next to it).
 
 | Option | Choices | |
 | --- | --- | --- |
