@@ -6,11 +6,14 @@ Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https:/
 
 ![a game's page: its logo on the wallpaper instead of a banner](assets/game.webp)
 
+![The steam-rice window on its look tab: a tab list on the left, block sliders for corners and wallpaper dim, choices as chips and [x] switches](assets/settings.webp)
+
 ![Big Picture mode: the same greys, font and quiet pictures](assets/bigpicture.webp)
 
 ## What it does
 
 - **Tiled.** One misty wallpaper behind the library. The top bar, the game list, the page and the bottom bar are panes that touch, each with a thin border, as a tiling WM draws them. No gaps, gradients or shadows.
+- **Its own settings window.** A rice bowl button in the top bar opens a small terminal-style settings tool inside Steam, with every option, sliders and `[x]` switches. Changes show straight away. See [Options](#options).
 - **Terminal touches.** The open tab stands in `[brackets]` with a cursor blinking after the tabs, the open game has a `>` in front, and each shelf on the library home is a thin box with its name set into the top line. The Steam menu button wears your distro's logo: Arch by default, with nineteen others and Steam's own to pick from.
 - **Greyscale.** Steam's blue-grey is gone everywhere: library, settings, menus, downloads, friends. Only things that mean something (playing, online, danger) keep a colour, muted.
 - **Quiet pictures.** Steam's library is a wall of cover art. Here covers are black-and-white and a little darker, and show their colours while the mouse is on them. People's avatars and their frames are left in colour. A game's page shows its logo on the wallpaper instead of a banner. The "What's New" strip is hidden.
@@ -48,8 +51,6 @@ Download this repo (**Code → Download ZIP**), unzip it, and put the folder int
 ## Options
 
 The easy way is inside Steam: the **rice bowl button** in the top bar, left of the bell, opens the steam-rice window, a small terminal-style settings tool with every option below. Changes show straight away, in every Steam window.
-
-![The steam-rice window on its look tab: a tab list on the left, block sliders for corners and wallpaper dim, choices as chips and [x] switches](assets/settings.webp)
 
 - Keys: `1`-`4` pick a tab, `Tab` moves, `Space` toggles, `←` `→` move a slider, `Esc` closes.
 - What you pick there is laid over the theme settings in Millennium, not written into them. **reset defaults** (click it twice) forgets it all and hands the theme back to Millennium.
