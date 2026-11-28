@@ -1,0 +1,4 @@
+{
+    "tint": "{{colors.surface.dark.hex}}",
+    "accent": "{{colors.primary.dark.hex}}"
+}

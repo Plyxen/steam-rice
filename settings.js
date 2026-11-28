@@ -7,6 +7,10 @@
 // It doesn't touch Millennium's own settings. What you pick here is kept in Steam's local storage and
 // laid over them: for an option, the same options/*.css file Millennium would load is linked after
 // Millennium's; for a slider, the variable is set on the page. "reset defaults" forgets all of it.
+//
+// Colours are its own too: grey as the theme is made, one colour typed in, or the two colours that
+// matugen writes to matugen.json in the theme's folder, read again every few seconds so that Steam
+// follows the wallpaper.
 
 (() => {
     if (window.__riceSettings) return;
@@ -14,7 +18,12 @@
 
     const KEY = 'steam-rice:settings';
     // the variables the sliders, the wallpaper field and the extra switches set
-    const VARS = ['--corners', '--wallpaper-dim', '--wallpaper', '--hide-add-shelf', '--hide-add-game'];
+    const VARS = ['--corners', '--wallpaper-dim', '--wallpaper-blur', '--wallpaper', '--hide-add-shelf', '--hide-add-game'];
+    // The two colours in use while colours are on, as {"tint": "#rrggbb", "accent": "#rrggbb"}. Gone = grey.
+    // The main window writes it, every window paints with it, and mono.js looks whether it is there
+    const COLOURS = 'steam-rice:colours';
+    const HEX = /^#[0-9a-fA-F]{6}$/;
+    const OWN_COLOUR = '#c4a7e7'; // until one is typed in
 
     /* ---------------------------------------------------------------- what is stored, and applying it */
 
@@ -28,10 +37,32 @@
     }
     function write(s) {
         for (const k of ['opts', 'vars']) if (s[k] && !Object.keys(s[k]).length) delete s[k];
+        if (s.colours && s.colours.mode !== 'custom' && s.colours.mode !== 'matugen') delete s.colours;
         try {
             if (Object.keys(s).length) localStorage.setItem(KEY, JSON.stringify(s));
             else localStorage.removeItem(KEY);
         } catch {}
+    }
+
+    function colours() {
+        try {
+            const c = JSON.parse(localStorage.getItem(COLOURS));
+            return c && HEX.test(c.tint) && HEX.test(c.accent) ? c : null;
+        } catch {
+            return null;
+        }
+    }
+    // true when that changed something
+    function setColours(c) {
+        try {
+            const next = c ? JSON.stringify({ tint: c.tint.toLowerCase(), accent: c.accent.toLowerCase() }) : null;
+            if (localStorage.getItem(COLOURS) === next) return false;
+            if (next) localStorage.setItem(COLOURS, next);
+            else localStorage.removeItem(COLOURS);
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     // the theme's files are served from wherever rice.css came from
@@ -77,13 +108,24 @@
             if (typeof vars[v] === 'string') root.style.setProperty(v, vars[v], 'important');
             else root.style.removeProperty(v);
         }
+        const c = colours();
+        if (c) {
+            root.style.setProperty('--rice-tint', c.tint);
+            root.style.setProperty('--rice-accent', c.accent);
+            root.dataset.riceColours = 'on';
+        } else {
+            root.style.removeProperty('--rice-tint');
+            root.style.removeProperty('--rice-accent');
+            delete root.dataset.riceColours;
+        }
+        window.__riceMonoSwap?.(); // Steam's own sheets, which mono.js keeps in a grey and a tinted copy
     }
 
     apply();
     // a new window's style sheets can arrive a moment after this script
     for (const ms of [300, 1500, 5000]) setTimeout(apply, ms);
     window.addEventListener('storage', e => {
-        if (e.key === KEY || e.key === null) {
+        if (e.key === KEY || e.key === COLOURS || e.key === null) {
             apply();
             if (layer) render();
         }
@@ -115,7 +157,7 @@
     const cssVar = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
     const changed = () => {
         const s = read();
-        return Object.keys(s.opts || {}).length + Object.keys(s.vars || {}).length;
+        return Object.keys(s.opts || {}).length + Object.keys(s.vars || {}).length + (s.colours ? 1 : 0);
     };
 
     // what Millennium itself has picked for an option: the value whose file it loaded into this window
@@ -145,6 +187,65 @@
         else s.vars[name] = value;
         write(s);
         apply();
+        render();
+    }
+
+    /* ---- colours ---- */
+
+    // What the last look at matugen.json gave: {tint, accent}, 'none' (no such file), 'bad' (not what the
+    // template writes) or null (not looked yet)
+    let matugen = null;
+    const matugenNote = () => (matugen && typeof matugen === 'object' ? matugen.tint + matugen.accent : String(matugen));
+
+    async function readMatugen() {
+        const base = themeBase();
+        if (!base) return;
+        const before = matugenNote();
+        try {
+            const r = await fetch(base + 'matugen.json', { cache: 'no-store' });
+            if (r.status === 404) matugen = 'none';
+            else if (r.ok) {
+                let j = null;
+                try {
+                    j = JSON.parse(await r.text());
+                } catch {}
+                matugen = j && HEX.test(j.tint) && HEX.test(j.accent) ? { tint: j.tint, accent: j.accent } : 'bad';
+            }
+        } catch {}
+        if (read().colours?.mode !== 'matugen') return;
+        // A file that can't be read just now (matugen may be half way through writing it) leaves the
+        // colours as they were
+        const now = typeof matugen === 'object' && matugen && setColours(matugen);
+        if (now) apply();
+        if (layer && (now || before !== matugenNote())) render();
+    }
+
+    // Puts the colours in use in line with what is set. The main window does this, as the only one
+    function syncColours() {
+        const c = read().colours;
+        if (!c) setColours(null) && apply();
+        else if (c.mode === 'custom') {
+            const own = HEX.test(c.colour) ? c.colour : OWN_COLOUR;
+            setColours({ tint: own, accent: own }) && apply();
+        } else readMatugen();
+    }
+
+    function setMode(mode) {
+        const s = read();
+        if (mode === 'grey') delete s.colours;
+        else s.colours = { ...s.colours, mode };
+        write(s);
+        // matugen with no file yet: grey until there is one
+        if (mode === 'matugen' && setColours(typeof matugen === 'object' ? matugen : null)) apply();
+        syncColours();
+        render();
+    }
+
+    function setOwnColour(colour) {
+        const s = read();
+        s.colours = { mode: 'custom', colour };
+        write(s);
+        syncColours();
         render();
     }
 
@@ -229,7 +330,9 @@
                     row('logo', val('Logo')),
                     row('pictures', val('Pictures')),
                     row('changed', n ? n + (n === 1 ? ' option here' : ' options here') : 'nothing here'),
-                    h('div', { class: 'rice-palette' }, [7, 16, 27, 39, 55, 71, 84, 96].map(l => h('span', { style: `background:hsl(0 0% ${l}%)` })))
+                    row('colours', read().colours?.mode || 'grey'),
+                    // greys while the theme is grey, the tint and the accent while colours are on
+                    h('div', { class: 'rice-palette' }, [0.18, 0.28, 0.4, 0.5, 0.63, 0.76, 0.88, 0.97].map((l, i) => h('span', { style: `background:oklch(from var(--rice-${i > 4 ? 'accent' : 'tint'}, #808080) ${l} min(c, ${i > 4 ? 0.13 : 0.025}) h)` })))
                 )
             ),
             heading('how this works'),
@@ -254,17 +357,21 @@
         if (name === 'look') {
             const corners = parseFloat(cssVar('--corners')) || 0;
             const dim = parseFloat(cssVar('--wallpaper-dim'));
+            const blur = parseFloat(cssVar('--wallpaper-blur')) || 0;
             fields.push(
                 range('corners', 'corners', 'buttons, fields and menus. avatars stay as steam draws them.', {
                     min: 0, max: 8, step: 1, value: corners, show: v => (v ? v + 'px' : 'sharp'), set: v => setVar('--corners', v + 'px'),
                 }),
                 range('dim', 'wallpaper dim', 'how dark the wallpaper is. go darker if text is hard to read.', {
                     min: 0, max: 0.9, step: 0.1, value: Number.isFinite(dim) ? dim : 0.5, show: v => Math.round(v * 100) + '%', set: v => setVar('--wallpaper-dim', String(v)),
+                }),
+                range('blur', 'wallpaper blur', 'blurs the wallpaper, like a see-through terminal on hyprland or niri.', {
+                    min: 0, max: 24, step: 3, value: blur, show: v => (v ? v + 'px' : 'off'), set: v => setVar('--wallpaper-blur', v ? v + 'px' : null),
                 })
             );
         }
         for (const [n, c] of conds) {
-            if (n === 'Corners' || n === 'Wallpaper dim') continue; // the two sliders above
+            if (n === 'Corners' || n === 'Wallpaper dim') continue; // they are sliders above
             if (isSwitch(c)) {
                 const yes = Object.keys(c.values).find(v => v.toLowerCase() === 'yes');
                 const no = Object.keys(c.values).find(v => v.toLowerCase() === 'no');
@@ -291,6 +398,35 @@
             };
             input.addEventListener('change', save);
             fields.push(h('div', { class: 'rice-field' }, h('span', { class: 'rice-label' }, 'wallpaper'), h('label', { class: 'rice-input' }, h('span', null, '>'), input), desc('a link to your own picture, starting with https://. press enter to set it.')));
+
+            const col = read().colours;
+            const mode = col?.mode || 'grey';
+            const says = {
+                grey: 'grey, as the theme is made.',
+                custom: 'one colour of your own: text and menus take a little of it, buttons and bars more.',
+                matugen: 'the colours matugen takes from your wallpaper. steam follows when it changes.',
+            };
+            fields.push(choice('colours', 'colours', says[mode], ['grey', 'custom', 'matugen'], mode, setMode));
+            const dot = c => h('i', { class: 'rice-dot', style: 'background:' + c });
+            if (mode === 'custom') {
+                const own = HEX.test(col.colour) ? col.colour : OWN_COLOUR;
+                const field = h('input', { type: 'text', spellcheck: 'false', maxlength: 7, placeholder: '#rrggbb', value: own, 'data-k': 'colour' });
+                field.addEventListener('change', () => {
+                    let v = field.value.trim();
+                    if (/^[0-9a-fA-F]{6}$/.test(v)) v = '#' + v;
+                    if (!HEX.test(v)) return field.parentElement.classList.add('bad');
+                    setOwnColour(v.toLowerCase());
+                });
+                fields.push(h('div', { class: 'rice-field' }, h('span', { class: 'rice-label' }, 'colour'), h('label', { class: 'rice-input' }, dot(own), field), desc('as #rrggbb. press enter to set it.')));
+            }
+            if (mode === 'matugen') {
+                const found = typeof matugen === 'object' && matugen;
+                const line = found
+                    ? h('span', { class: 'rice-read' }, dot(matugen.tint), matugen.tint, ' ', dot(matugen.accent), matugen.accent)
+                    : h('span', { class: 'rice-read' }, matugen === 'bad' ? 'matugen.json is there, but not as the template writes it' : matugen === 'none' ? 'no matugen.json yet' : 'looking…');
+                const help = found ? 'read from matugen.json in the theme\'s folder.' : 'matugen writes it to the theme\'s folder, from the template in the theme\'s matugen folder. the readme has the lines for its config.';
+                fields.push(h('div', { class: 'rice-field' }, h('span', { class: 'rice-label' }, 'matugen.json'), line, desc(help)));
+            }
         }
         if (name === 'library') {
             const shelf = cssVar('--hide-add-shelf') === 'on';
@@ -364,6 +500,7 @@
         }
         resetArmed = false;
         write({});
+        setColours(null);
         apply();
         render();
     }
@@ -501,7 +638,7 @@
     --r-t1: var(--fg-bright, hsl(0 0% 98%)); --r-t2: var(--fg-strong, hsl(0 0% 92%)); --r-t3: var(--fg, hsl(0 0% 84%));
     --r-t4: var(--fg-dim, hsl(0 0% 64%)); --r-t5: var(--fg-faint, hsl(0 0% 50%));
     --r-line: var(--line, hsl(0 0% 100% / 0.12)); --r-border: hsl(0 0% 100% / 0.2); --r-focus: hsl(0 0% 100% / 0.6);
-    --r-sel: hsl(0 0% 84%); --r-sel-text: var(--ink, hsl(0 0% 8%)); --r-hover: var(--hover, hsl(0 0% 100% / 0.06));
+    --r-sel: oklch(from var(--rice-accent, #808080) 0.877 min(c, 0.09) h); --r-sel-text: var(--ink, hsl(0 0% 8%)); --r-hover: var(--hover, hsl(0 0% 100% / 0.06));
     --r-red: var(--red, hsl(355 65% 70%)); --r-radius: min(var(--corners, 3px), 3px);
     display: grid; grid-template-rows: auto minmax(0, 1fr) auto; width: min(880px, 94vw); height: min(600px, 88vh);
     overflow: hidden; border: 1px solid var(--r-border); border-radius: var(--r-radius);
@@ -584,6 +721,9 @@
 .rice-fetch .who { color: var(--r-t1); font-weight: 600; }
 .rice-rule { color: var(--r-t5); }
 .rice-palette { display: flex; margin-top: 8px; }
+.rice-dot { flex: none; display: inline-block; width: 11px; height: 11px; margin-right: 7px; vertical-align: -1px; box-shadow: 0 0 0 1px var(--r-border); }
+.rice-read { color: var(--r-t3); text-transform: none; }
+.rice-read .rice-dot:not(:first-child) { margin-left: 14px; }
 .rice-palette span { width: 18px; height: 12px; }
 .rice-tips { margin: 0; padding: 0; list-style: none; }
 .rice-tips li { padding: 2px 0 2px 3ch; text-indent: -3ch; color: var(--r-t4); }
@@ -598,4 +738,9 @@
     // Steam builds the top bar a moment after the window opens, and rebuilds it now and then
     place();
     setInterval(place, 1000);
+    // The window with the button keeps the colours: once at the start, then matugen.json every few
+    // seconds while that is what is picked
+    const mine = () => !!button && !document.hidden;
+    setTimeout(() => button && syncColours(), 2000);
+    setInterval(() => mine() && read().colours?.mode === 'matugen' && readMatugen(), 3000);
 })();

@@ -11,12 +11,25 @@
 //
 // Blue, Steam's tint and accent, becomes plain grey. Other hues (green for "playing", red for danger)
 // stay, muted. Pictures are not touched. Steam's font becomes --rice-font, which rice.css sets.
+//
+// With colours switched on in the steam-rice window, the greys are written so that they follow two
+// colours instead, --rice-tint and --rice-accent, and a change of colour needs no new sheets.
 
 (() => {
     if (window.__riceMono) return;
     window.__riceMono = true;
 
     const steamCss = 'https://steamloopback.host/css/';
+
+    // settings.js keeps the two colours under this name while colours are on. Here only "is it there" matters
+    const COLOURS = 'steam-rice:colours';
+    const tinted = () => {
+        try {
+            return !!localStorage.getItem(COLOURS);
+        } catch {
+            return false;
+        }
+    };
 
     /* ---------------------------------------------------------------- colour maths (OKLCH) */
 
@@ -56,30 +69,49 @@
     }
 
     // role: 'bg' = painted behind text, 'fg' = text, icons and lines, 'var' = a named colour (use unknown).
-    // Returns null when the colour is already grey. Answers are remembered: Steam reuses a few hundred colours
+    // The answer is what the colour becomes: ['grey', L] (it was grey already), ['tint', L] (one of Steam's
+    // blue-greys), ['accent', L] (Steam's blue) or ['rgb', [r, g, b]] (another hue, muted).
+    // Answers are remembered: Steam reuses a few hundred colours
     const seen = new Map();
     function remap(r, g, b, role) {
         const key = role + r + ',' + g + ',' + b;
         if (seen.has(key)) return seen.get(key);
         const [L, C, h] = toLch(r, g, b);
-        const grey = l => toRgb(Math.min(1, Math.max(0, l)), 0, 0);
         let out;
-        if (C < 0.003) out = null;
+        if (C < 0.003) out = ['grey', L];
         else if (h >= 195 && h <= 292) {
             // blue. Steam's blue-greys keep their lightness and lose the tint. The accent goes mid grey
             // behind text, so white labels still read, and light grey as text or a line
-            if (C <= 0.06 || role === 'var') out = grey(L);
-            else out = role === 'bg' ? grey(Math.min(L * 0.8, 0.56)) : grey(L + (1 - L) * 0.5);
-        } else if (C <= 0.03) out = grey(L); // a faint warm or green cast is still just grey
-        else out = toRgb(role === 'bg' ? Math.min(L, 0.62) : L, Math.min(C, 0.1), h); // real colours stay, muted
+            if (C <= 0.06 || role === 'var') out = ['tint', L];
+            else out = ['accent', role === 'bg' ? Math.min(L * 0.8, 0.56) : L + (1 - L) * 0.5];
+        } else if (C <= 0.03) out = ['tint', L]; // a faint warm or green cast is still just grey
+        else out = ['rgb', toRgb(role === 'bg' ? Math.min(L, 0.62) : L, Math.min(C, 0.1), h)]; // real colours stay, muted
         seen.set(key, out);
         return out;
+    }
+
+    // The colour as text. alpha is '' or what was written after the colour's own three numbers.
+    // Grey: a plain grey of that lightness, or null to leave a colour that was grey already.
+    // Tinted: the same lightness with the hue of --rice-tint or --rice-accent, and no more of it than
+    // suits a line of text. Black and white stay as they are
+    let tint = false;
+    const hex2 = v => v.toString(16).padStart(2, '0');
+    function paint([kind, v], alpha) {
+        if (kind !== 'rgb') {
+            const L = Math.min(1, Math.max(0, v));
+            if (tint && L > 0.04 && L < 0.985) {
+                const from = kind === 'accent' ? 'var(--rice-accent, #808080) ' + L.toFixed(3) + ' min(c, 0.13) h' : 'var(--rice-tint, #808080) ' + L.toFixed(3) + ' min(c, 0.025) h';
+                return 'oklch(from ' + from + (alpha === '' ? '' : ' / ' + alpha) + ')';
+            }
+            if (kind === 'grey') return null;
+            v = toRgb(L, 0, 0);
+        }
+        return alpha === '' ? '#' + hex2(v[0]) + hex2(v[1]) + hex2(v[2]) : `rgba(${v},${alpha})`;
     }
 
     // url(...) is matched first so that it is passed over whole: "#abc" in there names a part of a
     // picture, it is not a colour
     const colour = /\burl\([^)]*\)|#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\(\s*[^()]*\)/g;
-    const hex2 = v => v.toString(16).padStart(2, '0');
 
     function recolour(value, role) {
         return value.replace(colour, tok => {
@@ -89,7 +121,8 @@
                 if (h.length === 3 || h.length === 4) h = h.replace(/./g, '$&$&');
                 if (h.length !== 6 && h.length !== 8) return tok;
                 const to = remap(parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16), role);
-                return to ? '#' + hex2(to[0]) + hex2(to[1]) + hex2(to[2]) + h.slice(6) : tok;
+                if (!tint) return to[0] === 'grey' ? tok : paint(to, '') + h.slice(6);
+                return paint(to, h.length === 8 ? String(+(parseInt(h.slice(6), 16) / 255).toFixed(3)) : '') ?? tok;
             }
             if (tok.includes('var(') || tok.includes('calc(') || tok.includes('from ')) return tok;
             const n = tok.slice(tok.indexOf('(') + 1, -1).split(/[\s,/]+/).filter(Boolean);
@@ -99,8 +132,7 @@
                 : n.slice(0, 3).map(v => (v.endsWith('%') ? parseFloat(v) * 2.55 : parseFloat(v)));
             if (rgb.some(Number.isNaN)) return tok;
             const to = remap(Math.round(rgb[0]), Math.round(rgb[1]), Math.round(rgb[2]), role);
-            if (!to) return tok;
-            return n[3] !== undefined ? `rgba(${to},${n[3]})` : `rgb(${to})`;
+            return paint(to, n[3] ?? '') ?? tok;
         });
     }
 
@@ -108,7 +140,8 @@
 
     const hasColour = /#[0-9a-fA-F]{3}|rgb|hsl/;
 
-    function greySheet(css, href) {
+    function greySheet(css, href, withTint) {
+        tint = withTint;
         // The rewritten sheet is loaded from memory, where "/images/x.png" points nowhere: spell urls out in full
         css = css.replace(/url\(\s*(['"]?)(?!data:|https?:|blob:|#|<)([^'")]+)\1\s*\)/g, (all, q, u) => {
             try {
@@ -142,17 +175,19 @@
         if (window.opener && window.opener.document) home = window.opener;
     } catch {}
     const made = (home.__riceMonoSheets ||= new Map());
+    let mode = tinted();
 
     function grey(href) {
-        if (!made.has(href)) {
-            made.set(
-                href,
-                fetch(href)
-                    .then(r => (r.ok ? r.text() : Promise.reject(r.status)))
-                    .then(css => home.URL.createObjectURL(new home.Blob([greySheet(css, href)], { type: 'text/css' })))
-            );
+        const key = (mode ? 'tint ' : '') + href;
+        const withTint = mode;
+        if (!made.has(key)) {
+            const job = fetch(href)
+                .then(r => (r.ok ? r.text() : Promise.reject(r.status)))
+                .then(css => home.URL.createObjectURL(new home.Blob([greySheet(css, href, withTint)], { type: 'text/css' })));
+            made.set(key, job);
+            job.catch(() => made.delete(key)); // try again in the next window
         }
-        return made.get(href);
+        return made.get(key);
     }
 
     // Switch Steam's sheet off once it has loaded too. The grey copy can be ready before a big
@@ -169,22 +204,45 @@
 
     const copies = new Map(); // Steam's sheet -> its grey copy, in this window
 
-    function take(link) {
-        if (link.dataset.rice || !link.href.startsWith(steamCss)) return;
-        link.dataset.rice = 'stock';
+    function copy(link) {
+        const asked = mode;
         grey(link.href)
             .then(url => {
+                if (asked !== mode || !link.isConnected) return; // colours were switched meanwhile
+                const old = copies.get(link);
                 const mono = document.createElement('link');
                 mono.rel = 'stylesheet';
                 mono.dataset.rice = 'mono';
                 mono.href = url;
-                // Steam's own sheet stays until the grey one has loaded, so a window is never unstyled
-                mono.onload = () => retire(link);
-                link.after(mono);
+                // What is there stays until the new one has loaded, so a window is never unstyled:
+                // Steam's own sheet the first time, the other copy when colours are switched
+                mono.onload = () => {
+                    retire(link);
+                    if (old) old.remove();
+                };
+                (old || link).after(mono);
                 copies.set(link, mono);
             })
-            .catch(() => made.delete(link.href)); // leave Steam's sheet alone, try again in the next window
+            .catch(() => {}); // leave Steam's sheet alone
     }
+
+    function take(link) {
+        if (link.dataset.rice || !link.href.startsWith(steamCss)) return;
+        link.dataset.rice = 'stock';
+        copy(link);
+    }
+
+    // Colours switched on or off (settings.js calls this, and other windows hear of it from storage):
+    // every sheet gets its other copy
+    function swap() {
+        if (tinted() === mode) return;
+        mode = !mode;
+        for (const link of [...copies.keys()]) if (link.isConnected) copy(link);
+    }
+    window.__riceMonoSwap = swap;
+    window.addEventListener('storage', e => {
+        if (e.key === COLOURS || e.key === null) swap();
+    });
 
     function scan() {
         document.querySelectorAll('link[rel=stylesheet]').forEach(take);

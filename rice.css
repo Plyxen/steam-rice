@@ -22,6 +22,7 @@
     /* wallpaper: any image url works. The default is the misty forest next to this file */
     --wallpaper: url('wallpaper.jpg');
     --wallpaper-dim: 0.5; /* 0 = raw wallpaper, 1 = black. Raise it if text is hard to read */
+    --wallpaper-blur: 0px; /* 0px = sharp. 12px or so gives the blurred look of a see-through terminal. The steam-rice window has a slider */
     --grain: on; /* off | on: film grain over the wallpaper */
     --logo: distro; /* distro | steam: a Linux distro's logo on the Steam menu button (Arch, unless the Logo option picks another), or Steam's own */
     --pane-borders: on; /* off | on: a thin border around every pane, as a tiling WM draws them. off = plain lines between panes */
@@ -97,6 +98,28 @@
     --radius-md: var(--corners);
     --radius-lg: calc(var(--corners) * 1.34);
     --MillenniumControls-BorderRadius: var(--corners);
+}
+
+/* Colours, switched on in the steam-rice window (look > colours). The greys take the hue of --rice-tint.
+   --rice-accent goes where a rice shows its accent: the borders of the panes, the logo, the brackets and
+   the cursor in the top bar, the > in the game list, and the light buttons. settings.js sets the two
+   colours and the attribute, from the colour you type there or from the file matugen writes. Only the
+   hue and how strong it is are taken from them; how light each thing is stays as it is in grey, so text
+   reads as well as before */
+:root[data-rice-colours] {
+    --ink: oklch(from var(--rice-tint) 0.193 min(c, 0.025) h);
+    --fg-bright: oklch(from var(--rice-tint) 0.985 min(c, 0.012) h);
+    --fg-strong: oklch(from var(--rice-tint) 0.939 min(c, 0.025) h);
+    --fg: oklch(from var(--rice-tint) 0.877 min(c, 0.025) h);
+    --fg-dim: oklch(from var(--rice-tint) 0.716 min(c, 0.025) h);
+    --fg-faint: oklch(from var(--rice-tint) 0.598 min(c, 0.025) h);
+    --popup: oklch(from var(--rice-tint) 0.227 min(c, 0.025) h);
+    --menu-tint: oklch(from var(--rice-tint) 0.182 min(c, 0.025) h / 0.8);
+    --button: oklch(from var(--rice-accent) 0.908 min(c, 0.09) h);
+    --button-hover: oklch(from var(--rice-accent) 0.845 min(c, 0.09) h);
+    --rice-mark: oklch(from var(--rice-accent) 0.82 min(c, 0.13) h);
+    --pane-edge: oklch(from var(--rice-accent) 0.8 min(c, 0.13) h / 0.34);
+    --line: oklch(from var(--rice-accent) 0.8 min(c, 0.13) h / 0.24);
 }
 
 /* a style query can't restyle the element it asks about, so the grain is dropped one level down */
@@ -199,6 +222,26 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
     border: none !important;
 }
 
+/* Blur, the look of a see-through terminal on a blurring compositor. A layer just above the wallpaper and
+   under everything else blurs what is behind it. It carries the grain, which the blur would smooth away
+   with the picture. The layer is not there at all while the blur is 0px. Not in Big Picture mode */
+@container not style(--wallpaper-blur: 0px) {
+    .MillenniumWindow_MainSteamWindow .Wrapper.ForceOpaqueBackground {
+        isolation: isolate; /* keeps the layer above this element's own background */
+    }
+    .MillenniumWindow_MainSteamWindow .Wrapper.ForceOpaqueBackground::before,
+    html.friendsui-container body:not(.ContextMenuPopupBody)::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        -webkit-backdrop-filter: blur(var(--wallpaper-blur));
+        backdrop-filter: blur(var(--wallpaper-blur));
+        background-image: var(--grain-layer);
+    }
+}
+
 .MillenniumWindow_MainSteamWindow .OuterFrame,
 .MillenniumWindow_MainSteamWindow .ContentFrame,
 .MillenniumWindow_MainSteamWindow .LocalContentContainer {
@@ -246,7 +289,7 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
    size; Steam's own drawing is hidden and the logo is cut out of a block of the text's colour */
 @container style(--logo: distro) {
     .DesktopUI .RootMenuBar .SteamButton svg {
-        background: currentColor;
+        background: var(--rice-mark, currentColor);
         -webkit-mask: var(--logo-shape) center / 15px no-repeat;
         mask: var(--logo-shape) center / 15px no-repeat;
     }
@@ -286,7 +329,7 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
     background: none;
     letter-spacing: 0;
     font-weight: 400;
-    color: var(--fg-dim);
+    color: var(--rice-mark, var(--fg-dim));
 }
 .DesktopUI .SuperNav .Selected .MenuButton::before {
     content: '[';
@@ -303,7 +346,7 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
     width: 9px;
     height: 18px;
     margin: 2px 0 0 6px;
-    background: var(--fg-dim);
+    background: var(--rice-mark, var(--fg-dim));
     animation: rice-cursor 1.1s steps(1) infinite;
 }
 @keyframes rice-cursor {
@@ -439,7 +482,7 @@ html.friendsui-container body:not(.ContextMenuPopupBody),
     line-height: 16px;
     text-align: center;
     font-weight: 600;
-    color: var(--fg-bright);
+    color: var(--rice-mark, var(--fg-bright));
 }
 /* The library home: each shelf is a panel as a terminal program draws one, a thin box with the
    shelf's name set into its top line. Steam's own rule beside the name is that top line; the box

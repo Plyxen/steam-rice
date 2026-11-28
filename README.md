@@ -16,6 +16,7 @@ Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https:/
 - **Its own settings window.** A rice bowl button in the top bar opens a small terminal-style settings tool inside Steam, with every option, sliders and `[x]` switches. Changes show straight away. See [Options](#options).
 - **Terminal touches.** The open tab stands in `[brackets]` with a cursor blinking after the tabs, the open game has a `>` in front, and each shelf on the library home is a thin box with its name set into the top line. The Steam menu button wears your distro's logo: Arch by default, with nineteen others and Steam's own to pick from.
 - **Greyscale.** Steam's blue-grey is gone everywhere: library, settings, menus, downloads, friends. Only things that mean something (playing, online, danger) keep a colour, muted.
+- **Or tinted.** The settings window can give the greys a colour: one of your own, or the ones [matugen](https://github.com/InioX/matugen) takes from your wallpaper, followed live. See [Colours](#colours).
 - **Quiet pictures.** Steam's library is a wall of cover art. Here covers are black-and-white and a little darker, and show their colours while the mouse is on them. People's avatars and their frames are left in colour. A game's page shows its logo on the wallpaper instead of a banner. The "What's New" strip is hidden.
 - **Nothing moves.** Menus, tabs, the bell, your name, the window buttons and Play are where Steam has them, so your hand still finds them. The tabs and menus are lowercase, and the tabs are spaced out to the width of Steam's own. "Add shelf" sits under the shelves instead of above them. The window buttons are full size with a dot drawn in them, so the corner still closes the window.
 - **Friends list and chat** have the same wallpaper, with their parts see-through and split by lines.
@@ -26,7 +27,7 @@ Steam made to look like a tiling-WM Linux rice: a theme for [Millennium](https:/
 
 ## Light
 
-What Steam loads is about 100 KB in six files, and it adds 144 style rules to Steam's twenty thousand. The whole download, screenshots included, is about 500 KB.
+What Steam loads is about 105 KB in six files, and it adds 147 style rules to Steam's twenty thousand. The whole download, screenshots included, is about 500 KB.
 
 Steam has almost no colour variables. Its look is some eleven thousand literal colours in its own style sheets, so themes usually override them rule by rule, which gets large and breaks when Valve renames things. This theme doesn't add colour rules at all. `mono.js` reads Steam's style sheets once when Steam starts (about 0.15 s), rewrites the colours in the text, and gives every window the rewritten sheet in place of the original. Steam runs with the same number of rules as with no theme, and a Steam update needs nothing from you.
 
@@ -54,7 +55,7 @@ The easy way is inside Steam: the **rice bowl button** in the top bar, left of t
 
 - Keys: `1`-`4` pick a tab, `Tab` moves, `Space` toggles, `←` `→` move a slider, `Esc` closes.
 - What you pick there is laid over the theme settings in Millennium, not written into them. **reset defaults** (click it twice) forgets it all and hands the theme back to Millennium.
-- Two things are only in the window: sliders for corners and wallpaper dim that go finer than Millennium's three steps, and a field for a link to your own wallpaper.
+- Four things are only in the window: sliders for corners and wallpaper dim that go finer than Millennium's three steps, a wallpaper blur slider for the look of a see-through terminal on a blurring compositor, a field for a link to your own wallpaper, and [colours](#colours).
 - Store and community pages are web pages of their own, which the window can't reach. That one option is set in Millennium.
 
 The same options are in Millennium: open the theme's settings (the cog next to it).
@@ -74,9 +75,30 @@ The same options are in Millennium: open the theme's settings (the cog next to i
 | Hide megaphone and Big Picture buttons | on, off | |
 | Hide What's New | on, off | |
 
-A few more are at the top of `rice.css`, each with a comment: your own wallpaper (`--wallpaper`), the edge distance of the game list and bottom bar (`--inset`), and hiding "Add shelf" and "Add a Game".
+A few more are at the top of `rice.css`, each with a comment: your own wallpaper (`--wallpaper`), its blur (`--wallpaper-blur`), the edge distance of the game list and bottom bar (`--inset`), and hiding "Add shelf" and "Add a Game".
 
 Smaller covers are Steam's own setting: **Settings → Library → Library user interface display size → Small**.
+
+### Colours
+
+The theme is grey. **colours** on the window's look tab can tint it:
+
+- **custom** takes one colour, typed as `#rrggbb`.
+- **matugen** takes the colours [matugen](https://github.com/InioX/matugen) makes from your wallpaper.
+
+Text and menus get a little of the colour. The pane borders, the logo, the brackets and the cursor in the top bar, the `>` in the game list, and Steam's buttons and bars get more. How light each thing is stays as it is in grey, so text reads as well as before. Store and community pages are not tinted.
+
+For matugen, add a template to its `config.toml`. The paths are for Linux, where Millennium keeps themes in `~/.steam/steam/steamui/skins`:
+
+```toml
+[templates.steam-rice]
+input_path = '~/.steam/steam/steamui/skins/steam-rice/matugen/steam-rice.json'
+output_path = '~/.steam/steam/steamui/skins/steam-rice/matugen.json'
+```
+
+Then pick **matugen** in the window. Steam looks at `matugen.json` every few seconds while its main window is open, so it follows a new wallpaper without a restart.
+
+The template takes `surface` for the tint and `primary` for the accent. For other colours, copy it, change the two names and point `input_path` at your copy. `matugen.json` is yours, not part of the theme: if Steam is grey again after a theme update, run matugen once more.
 
 ## Licence
 
